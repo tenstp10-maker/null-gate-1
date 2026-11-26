@@ -228,6 +228,12 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 #specEnd{position:absolute;inset:0;display:grid;place-items:center;background:#05070cb0}#specEnd>div{text-align:center;background:#0b1120;border:1px solid var(--line);border-radius:16px;padding:18px 26px}
 #specEnd .res{color:var(--gold)}#specEnd .b{color:#7fc0ff}#specEnd .r{color:#ff8a6e}
 @media (max-width:720px){.spStrip{grid-template-columns:1fr;}.spBtns{flex-wrap:wrap}.win{width:220px;height:180px}#wGate{width:220px;height:160px}}
+/* connection settings */
+.netSet summary{cursor:pointer;font:700 12px var(--hud);letter-spacing:.12em;color:var(--dim);text-transform:uppercase;min-height:28px;display:flex;align-items:center;gap:6px}
+.netSet summary .hint{text-transform:none;letter-spacing:0;font:500 11px Inter}
+.tnGrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:6px}
+#mp .tnGrid input{font:600 13px var(--hud)}
+@media (max-width:720px) and (orientation:portrait){.tnGrid{grid-template-columns:1fr}}
 </style></head><body>
 <canvas id="gl"></canvas>
 
@@ -264,6 +270,11 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
     <p class="heNote" id="mpJoinNote">Ask the host for the 4-letter code, or open the link they share.</p>
     <button class="deploy" id="mpJoin">JOIN ▸</button></section>
   </div>
+  <details class="sec netSet" id="mpNet"><summary>Connection settings <span class="hint">· if joining fails with "couldn't open a connection"</span></summary>
+   <p class="heNote">Some networks block direct connections between devices, often a home Wi-Fi with device isolation, or cellular. A relay (TURN) server passes the game traffic through instead. Only the <b>host</b> needs one. Free relays: ExpressTURN, Metered (sign up, copy the server, username and password).</p>
+   <div class="tnGrid"><input id="tnUrl" placeholder="turn:relay.example.com:3478" autocomplete="off" spellcheck="false" aria-label="Relay server"><input id="tnUser" placeholder="username" autocomplete="off" spellcheck="false" aria-label="Relay username"><input id="tnPass" placeholder="password" type="password" autocomplete="off" aria-label="Relay password"></div>
+   <div class="mrow"><button id="tnSave">Save relay</button><button id="tnTest">Test connection</button></div>
+   <p class="heNote" id="tnState"></p><p class="mpStatus" id="tnResult" aria-live="polite"></p></details>
   <div class="mpStatus" id="mpStatus" aria-live="polite"></div>
   <div class="err" id="mpErr" role="alert"></div>
  </div>
@@ -1515,9 +1526,24 @@ function loadLib(){if(LOCAL)return Promise.resolve(LocalPeer);
    const s=document.createElement('script');s.src=CDN[i++];s.async=true;const t=setTimeout(()=>{s.onload=s.onerror=null;s.remove();next()},10000);
    s.onload=()=>{clearTimeout(t);have()?res(have()):next()};s.onerror=()=>{clearTimeout(t);s.remove();next()};document.head.appendChild(s)};next()});
  return libP}
+// ---------- connection routes (ICE). Several public STUN servers, PeerJS's own relay, and your own relay (TURN) if you add one.
+// Only the host needs a relay for friends to get in through networks that block direct connections.
+const turnCfg=()=>{try{const t=JSON.parse(localStorage.getItem('ng-mp-turn')||'null');return t&&t.url?t:null}catch(e){return null}};
+const ICE_BASE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'},
+ {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}];
+function iceServers(){const t=turnCfg();if(!t)return ICE_BASE;const urls=t.url.split(/[\s,]+/).filter(Boolean).map(u=>/^turns?:/.test(u)?u:'turn:'+u);return ICE_BASE.concat([{urls,username:t.user||'',credential:t.pass||''}])}
+const candType=c=>{const m=/ typ (\w+)/.exec(c||'');return m?m[1]:null};
+// test which routes this device can find: local (same network), public (STUN), relay (TURN)
+async function testRoutes(){if(typeof RTCPeerConnection==='undefined')return null;const types=new Set();let pc;
+ try{pc=new RTCPeerConnection({iceServers:iceServers()});pc.createDataChannel('t');pc.onicecandidate=e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)types.add(t)}};
+  await pc.setLocalDescription(await pc.createOffer());
+  await new Promise(r=>{const t=setTimeout(r,7000);pc.onicegatheringstatechange=()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);r()}}})}catch(e){}
+ try{pc&&pc.close()}catch(e){}return types}
+const routeTxt=ts=>`local ${ts.has('host')?'✓':'✗'} · public ${ts.has('srflx')||ts.has('prflx')?'✓':'✗'} · relay ${ts.has('relay')?'✓':'✗'}`;
 // open a peer on the broker; resolves once it has an id
 function openPeer(P,id){return new Promise((res,rej)=>{let done=false,p;
- try{p=id?new P(id,{debug:1}):new P({debug:1})}catch(e){rej(e);return}
+ const opts={debug:1,config:{iceServers:iceServers()}};
+ try{p=id?new P(id,opts):new P(opts)}catch(e){rej(e);return}
  const t=setTimeout(()=>{if(done)return;done=true;try{p.destroy()}catch(e){}rej({type:'timeout'})},12000);
  p.on('open',()=>{if(done)return;done=true;clearTimeout(t);res(p)});
  p.on('error',e=>{if(done)return;done=true;clearTimeout(t);try{p.destroy()}catch(_){}rej(e)})})}
@@ -1636,7 +1662,13 @@ async function joinRoom(){if(busy)return;saveName();const c=$('#mpCode').value.t
  if(!busy){try{p.destroy()}catch(e){}return}
  peer=p;code=c;role='client';welcomed=false;lastRoster=null;
  const conn=peer.connect(PREFIX+c,{reliable:true,serialization:'json',metadata:{pid:PID}});hostConn=conn;
- joinT=setTimeout(()=>{if(!welcomed)fail(`Couldn't reach room ${c}. If the code is right, this network may block direct connections: try Wi-Fi.`)},15000);
+ // watch the direct connection: fail as soon as the browser gives up, and say which routes were tried
+ const seen=new Set();let watched=null,iceFailed=false;
+ const blockedMsg=()=>`Found room ${c}, but couldn't open a connection to the host (this phone found: ${routeTxt(seen)}). Same Wi-Fi often blocks this (router isolation). Fix: on the host, open Connection settings and add a relay (TURN), or put both devices on a phone hotspot.`;
+ const watch=setInterval(()=>{if(role!=='client'||welcomed||hostConn!==conn){clearInterval(watch);return}const pc=conn.peerConnection;if(!pc)return;
+  if(pc!==watched){watched=pc;pc.addEventListener('icecandidate',e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)seen.add(t)}})}
+  if(pc.iceConnectionState==='failed'||pc.connectionState==='failed'){iceFailed=true;clearInterval(watch);fail(blockedMsg())}},400);
+ joinT=setTimeout(()=>{clearInterval(watch);if(welcomed)return;fail(watched?blockedMsg():`Couldn't reach room ${c} through the room server. Check the code, check the host still has the room open, and try again.`)},25000);
  peer.on('error',e=>{if(role!=='client')return;if(!welcomed)fail(e&&e.type==='peer-unavailable'?`No room ${c}. Check the code with the host.`:netMsg(e))});
  peer.on('disconnected',()=>{/* the broker link isn't needed once connected to the host */});
  conn.on('open',()=>send(conn,{t:'hello',v:PROTO,pid:PID,name:myName,input:INPUT,cls:CLS()}));
@@ -1682,8 +1714,14 @@ function startMatch(){if(role!=='host')return;NG.audio&&NG.audio();const pr=NG.p
  broadcast()}
 function saveName(){myName=cleanName($('#mpName').value)||myName;$('#mpName').value=myName;sset(localStorage,'ng-mp-name',myName)}
 
+// ---------- connection settings
+function drawNet(){const t=turnCfg()||{};$('#tnUrl').value=t.url||'';$('#tnUser').value=t.user||'';$('#tnPass').value=t.pass||'';$('#tnState').textContent=t.url?'Your relay is on.':'No relay of your own yet (PeerJS\'s free relay is tried first).'}
+$('#tnSave').onclick=()=>{const url=$('#tnUrl').value.trim();if(url)sset(localStorage,'ng-mp-turn',JSON.stringify({url,user:$('#tnUser').value.trim(),pass:$('#tnPass').value}));else{try{localStorage.removeItem('ng-mp-turn')}catch(e){}}drawNet();toast(url?'Relay saved':'Relay removed')};
+$('#tnTest').onclick=async()=>{const b=$('#tnTest');b.disabled=true;$('#tnResult').textContent='Testing… (up to 7 s)';const ts=await testRoutes();b.disabled=false;
+ if(!ts){$('#tnResult').textContent='This browser can\'t do peer-to-peer.';return}
+ $('#tnResult').textContent=`This device: ${routeTxt(ts)}. `+(ts.has('relay')?'A relay works: friends should get in from any network.':ts.has('srflx')?'No relay: friends on networks that block direct connections (often the same Wi-Fi, or cellular) may not get in. Add a relay (TURN) below.':'Can\'t reach the internet route servers from here.')};
 // ---------- wiring
-$('#mpBtn').onclick=openMP;$('#mpBack').onclick=closeMP;
+$('#mpBtn').onclick=()=>{openMP();drawNet()};$('#mpBack').onclick=closeMP;
 $('#mpHost').onclick=()=>{NG.audio&&NG.audio();hostRoom()};$('#mpJoin').onclick=()=>{NG.audio&&NG.audio();joinRoom()};$('#lbStart').onclick=startMatch;
 $('#mpName').addEventListener('change',saveName);
 $('#mpCode').addEventListener('input',e=>{const v=e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);if(v!==e.target.value)e.target.value=v;$('#mpErr').textContent=''});
