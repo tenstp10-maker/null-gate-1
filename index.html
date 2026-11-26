@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#05070c">
-<title>NULL GATE · 1.3 MP-1</title>
+<title>NULL GATE · 1.3 MP-4</title>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 /* VOICE: a squad briefing on a carrier deck: terse callouts, numbers you trust.
@@ -188,12 +188,52 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 .localTag{color:#8fe3a0}
 @media (max-width:720px) and (orientation:portrait){.mpGrid,.lbGrid{grid-template-columns:1fr}.bigCode{font-size:48px}}
 @media (max-height:460px){.bigCode{font-size:42px}.pl{min-height:34px}.lbRow{padding-top:8px}#mp .codeIn{min-height:52px;font-size:28px}}
+.tmTag{flex:none;font:700 10px var(--hud);letter-spacing:.1em;padding:2px 6px;border-radius:5px;color:#fff}.tmTag.blue{background:#2a5fc4}.tmTag.red{background:#b8352b}
+#netPing{font-size:13px;min-width:56px;text-align:center}
+@media (max-width:720px) and (orientation:portrait){.pl .inTag:nth-of-type(2){display:none}}
+/* step 3: names over heads, player board, stalled-host warning */
+.mk b.hn{display:block;font:700 11px var(--hud);letter-spacing:.04em;color:#fff;text-shadow:0 1px 3px #000,0 0 6px #000;margin-bottom:1px}
+#hud #netPing{pointer-events:auto;cursor:pointer}
+#board{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 64px);transform:translateX(-50%);width:min(620px,94vw);background:#05070ce8;border:1px solid var(--line);border-radius:12px;padding:8px 10px;display:grid;grid-template-columns:1fr 1fr;gap:10px;z-index:2}
+#board p{grid-column:1/-1;margin:2px 0 0;text-align:center;font:500 11px Inter;color:var(--dim)}
+.bdT{min-width:0}.bdT.blue .bdR.h{color:#7fc0ff}.bdT.red .bdR.h{color:#ff8a6e}
+.bdR{display:grid;grid-template-columns:minmax(0,1fr) 54px 30px 40px 52px;gap:4px;align-items:center;font:600 12px var(--hud);padding:4px 2px;border-bottom:1px solid #ffffff12}
+.bdR:last-child{border-bottom:0}.bdR.h{font-size:10px;letter-spacing:.08em;color:var(--dim)}
+.bdR .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.bdR span:not(.nm),.bdR i{text-align:right}.bdR i{font-style:normal}
+.bdR.me{color:var(--gold)}.bdR.fz{opacity:.55}.bdR i.bot{color:var(--dim)}.bdR i.drop{color:#ff9a86}.bdR i.g{color:#8fe3a0}.bdR i.y{color:var(--gold)}.bdR i.r{color:#ff8a6e}
+#netWarn{position:absolute;left:50%;top:calc(env(safe-area-inset-top) + 66px);transform:translateX(-50%);font:700 13px var(--hud);letter-spacing:.08em;color:#1a1404;background:var(--gold);border-radius:8px;padding:5px 12px;white-space:nowrap}
+@media (max-width:720px){#board{grid-template-columns:1fr;top:calc(env(safe-area-inset-top) + 52px);max-height:70vh;overflow:auto}.bdR{grid-template-columns:minmax(0,1fr) 50px 28px 36px 50px}}
+@media (max-height:460px){#board{grid-template-columns:1fr 1fr;top:calc(env(safe-area-inset-top) + 50px);padding:6px 8px}.bdR{padding:2px;font-size:11px}#board p{display:none}}
+#hud.boardOn #feed,#hud.boardOn #banner{visibility:hidden}
+#board{background:#05070cf4}
+/* step 4: spectator screen */
+#spec{position:fixed;inset:0;z-index:4;pointer-events:none;font-family:var(--hud)}
+#spec .spStrip,#spec .win,#spec #specEnd,#spec button{pointer-events:auto}
+.spStrip{position:absolute;top:calc(env(safe-area-inset-top) + 6px);left:50%;transform:translateX(-50%);width:min(980px,96vw);background:#05070cd8;border:1px solid var(--line);border-radius:12px;padding:6px 10px;display:grid;grid-template-columns:minmax(150px,1fr) auto auto;gap:4px 12px;align-items:center}
+.spScore{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font:700 20px var(--hud)}.spScore .b{color:#7fc0ff}.spScore .r{color:#ff8a6e}
+.spMid{display:flex;gap:8px;align-items:center;font:700 13px var(--hud);white-space:nowrap}
+.spBtns{display:flex;gap:6px}.spBtns button{min-height:36px;padding:0 10px;font:600 12px Inter;background:#0b1120}
+.spPlayers{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px}
+.spP{font:600 11px var(--hud);background:#0b1120;border:1px solid var(--line);border-left:3px solid #ffffff40;border-radius:6px;padding:2px 7px;color:var(--dim)}.spP.blue{border-left-color:#4c9dff}.spP.red{border-left-color:#e8483a}.spP b{color:var(--ink)}
+.spP i{font-style:normal}.spP i.g{color:#8fe3a0}.spP i.y{color:var(--gold)}.spP i.r{color:#ff8a6e}
+.spFollow{grid-column:1/-1;font:500 11px Inter;color:var(--dim)}
+#spWarn{position:absolute;top:calc(env(safe-area-inset-top) + 120px);left:50%;transform:translateX(-50%);width:min(560px,92vw);background:var(--gold);color:#1a1404;border-radius:10px;padding:8px 12px;font:600 13px Inter;text-align:center}
+.win{position:absolute;width:300px;height:250px;min-width:180px;min-height:140px;background:#05070ce6;border:1px solid var(--line);border-radius:10px;overflow:hidden;resize:both;display:flex;flex-direction:column}
+#wTop{left:max(10px,env(safe-area-inset-left));bottom:calc(env(safe-area-inset-bottom) + 10px)}
+#wGate{right:max(10px,env(safe-area-inset-right));bottom:calc(env(safe-area-inset-bottom) + 10px);width:320px;height:210px}
+.wh{flex:none;display:flex;align-items:center;gap:6px;padding:2px 4px 2px 10px;font:700 11px var(--hud);letter-spacing:.1em;color:var(--dim);cursor:move;touch-action:none;border-bottom:1px solid var(--line)}
+.wh span{margin-right:auto}.wh small{letter-spacing:.02em;font-weight:500;text-transform:none}.wh button{min-height:30px;min-width:30px;padding:0 8px;font:600 11px Inter;border:0}
+.win canvas{flex:1;width:100%;min-height:0;display:block}
+.sLbl{position:absolute;transform:translate(-50%,-100%);font:700 11px var(--hud);white-space:nowrap;text-shadow:0 1px 3px #000,0 0 6px #000;pointer-events:none}.sLbl.blue{color:#9fd0ff}.sLbl.red{color:#ffab92}.sLbl.fol{outline:1px solid #fff;outline-offset:2px;border-radius:3px}
+#specEnd{position:absolute;inset:0;display:grid;place-items:center;background:#05070cb0}#specEnd>div{text-align:center;background:#0b1120;border:1px solid var(--line);border-radius:16px;padding:18px 26px}
+#specEnd .res{color:var(--gold)}#specEnd .b{color:#7fc0ff}#specEnd .r{color:#ff8a6e}
+@media (max-width:720px){.spStrip{grid-template-columns:1fr;}.spBtns{flex-wrap:wrap}.win{width:220px;height:180px}#wGate{width:220px;height:160px}}
 </style></head><body>
 <canvas id="gl"></canvas>
 
 <!-- HOME / TEAM SELECTION -->
 <div id="home" class="screen"><div class="homeIn">
- <header><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-1</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div>
+ <header><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-4</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div>
   <div class="modes" id="modes" role="group" aria-label="Game mode"><button data-m="eclipse">ECLIPSE</button><button data-m="twin">TWIN ORBIT</button><button data-m="ring">RING RUN</button></div>
   <button class="hb mpBtn" id="mpBtn">Multiplayer</button><button class="hb" id="rulesBtn">How to play</button><button class="hb" id="mapBtn">Map</button><button class="hb" id="hudBtn">HUD</button><button class="hb" id="sndBtn" aria-pressed="true">Sound on</button></header>
  <div class="grid">
@@ -242,11 +282,27 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 </div></div>
 <div id="mpToast" role="status"></div>
 
+<!-- SPECTATOR SCREEN (1.3 · step 4: Host only) -->
+<div id="spec" class="hidden">
+ <div id="specLbl"></div>
+ <div class="spStrip">
+  <div class="spScore"><b class="b" id="spB">0</b><div class="sbar"><i class="fb" id="spFB"></i><i class="fr" id="spFR"></i></div><b class="r" id="spR">0</b></div>
+  <div class="spMid"><span id="spHill"></span><span class="clock" id="spClock">6:00</span></div>
+  <div class="spBtns"><button id="spTop">Top view</button><button id="spGate">Gate view</button><button id="spQuit">End match</button></div>
+  <div class="spPlayers" id="spPlayers"></div>
+  <div class="spFollow" id="spFollow"></div>
+ </div>
+ <div id="spWarn" class="hidden"></div>
+ <div class="win" id="wTop"><div class="wh"><span>TOP VIEW</span><button class="wx" aria-label="Close top view">✕</button></div><canvas id="cvTop"></canvas></div>
+ <div class="win" id="wGate"><div class="wh"><span>GATE VIEW <small id="gateLbl"></small></span><button id="gateFlip">Flip</button><button class="wx" aria-label="Close gate view">✕</button></div><canvas id="cvGate"></canvas></div>
+ <div id="specEnd" class="hidden"><div><p class="res" id="specRes">BLUE WINS</p><div class="fs" id="specScore"></div><div class="mrow" style="justify-content:center"><button class="pri" id="specAgain">Rematch</button><button id="specLobby">Back to lobby</button></div></div></div>
+</div>
+
 <!-- HUD -->
 <div id="hud" class="hidden">
  <div class="topbar"><div class="score"><span class="b" id="sB">0</span><div class="sbar"><i class="fb" id="fB"></i><i class="fr" id="fR"></i></div><span class="r" id="sR">0</span></div>
   <div class="hillInfo"><span id="hName">HILL A</span><span id="hTime">37</span><span class="own none" id="hOwn">EMPTY</span><span class="own none hidden" id="hOwn2">EMPTY</span></div></div>
- <div class="tl"><button id="pauseBtn" aria-label="Pause">II</button><span class="clock" id="clock">6:00</span></div>
+ <div class="tl"><button id="pauseBtn" aria-label="Pause">II</button><span class="clock" id="clock">6:00</span><span class="clock hidden" id="netPing" role="button" aria-label="Players">… ms</span></div><div id="board" class="hidden" aria-live="off"></div><div id="netWarn" class="hidden">WAITING FOR THE HOST…</div>
  <div id="feed"></div>
  <div id="markers"></div>
  <svg id="xh" viewBox="0 0 28 28"><g stroke="#e8eefc" stroke-width="2" stroke-linecap="round"><path d="M14 3v6M14 19v6M3 14h6M19 14h6"/></g><circle cx="14" cy="14" r="1.6" fill="#e8eefc"/><circle id="xhR" cx="14" cy="14" r="12" fill="none" stroke="#e8eefc33" stroke-width="1"/></svg>
@@ -301,7 +357,7 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
  <div class="mrow" style="flex-direction:column"><button class="pri" id="resume">Resume</button><button id="pRules">How to play</button><button id="pHud">Customize HUD</button><button id="pSnd">Sound on</button><button id="quit">Quit to squad select</button></div></div></div>
 
 <!-- RULES -->
-<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-1</h3>
+<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-4</h3>
  <h4>Win</h4><ul><li>3 vs 3. Pick a map on the home screen: <b>Planets</b>, <b>Arena</b> (the forts) or <b>Core Arena</b>; every mode plays on all three. Your team scores 1 point a second while only your team is inside a live hill. If both teams are inside, nobody scores there.</li><li>First to <b>150</b> wins. At <b>6:00</b> the higher score wins.</li></ul>
  <h4>Every mode</h4><ul><li>Hills circle a body, one lap every 37 s, then move to the next: on Planets, A rock → B gas → C ice; on Arena, the core inside each fort; on Core Arena, the core (A), then beacons B and C. Gold dots trace the live orbit; the gold ring on your screen points to the live hill.</li><li>The live hill has gravity: inside, it carries you along and pulls you to its middle, so you can stop steering and fight. Steer to move or leave.</li><li>When the hill moves on, anyone still inside is slung out along its path.</li><li>Each live hill has a moon and asteroids circling it. Planets, moons and asteroids are solid: they block shots and movement.</li><li>Each team spawns on its home planet (Planets) or its home wall (Arena, Core Arena).</li><li><b>Planets pull on shots.</b> A bolt flying past a planet curves toward it: more the closer it passes and the longer it flies, so Power's 80 m shots bend most. Gas giant B pulls hardest, then rock A, then ice C; moons pull a little. The arena cores and beacons are small but dense, pulling about as hard as rock A. When a planet will bend your shot, a dotted aim arc shows where it goes (red end = it hits the planet). Aim assist and bots allow for the bend too.</li></ul>
  <h4>Eclipse</h4><ul><li>A star lights one side of each planet. For about 14 s of every lap the hill passes through the planet's shadow.</li><li>In shadow the hill scores <b>2 points a second</b>. The orbit dots dim there.</li><li>Enemies in shadow are hidden beyond 15 m, unless they fired in the last second. Bots play by the same rule.</li></ul>
@@ -475,13 +531,14 @@ const foeOf=t=>t==='blue'?'red':'blue';
 
 // ---------- create a match
 // opts: {mode:'eclipse'|'twin'|'ring', layout, seed, blue:[cls,cls,cls], red:[...], human:{team,idx}|null, diff}
+const isHuman=(o,team,i)=>!!((o.human&&o.human.team===team&&o.human.idx===i)||(o.humans||[]).some(h=>h.team===team&&h.idx===i));
 function create(opts){const mode=MODES[opts.mode]?opts.mode:'eclipse';const L=JSON.parse(JSON.stringify(opts.layout||makeOrbitLayout(1,mode,opts.map)));if(!L.planets)L.planets=[];const seed=opts.seed||1,R=rng(seed*977+3);
  const S={mode,L,A:L.A,R,t:0,seed,diff:DIFF[opts.diff||'normal'],spawns:L.spawns,soldiers:[],bolts:[],events:[],score:{blue:0,red:0},
   stage:0,live:[],zone:0,zoneT:0,zoneOwner:null,owners:[],hillShade:false,winner:null,over:false,_bid:0,_o:0};
  setLive(S);const pick=[0,1,4,2,3];
  for(const team of['blue','red']){const sg=team==='blue'?-1:1;for(let i=0;i<RULES.team;i++){const cls=CLASSES[(opts[team]||CLASS_IDS)[i]]||CLASSES.shield;
    const p=S.spawns[team][pick[i%5]].slice();
-   S.soldiers.push({id:S.soldiers.length,team,idx:i,cls,human:!!(opts.human&&opts.human.team===team&&opts.human.idx===i),role:'anchor',
+   S.soldiers.push({id:S.soldiers.length,team,idx:i,cls,human:isHuman(opts,team,i),role:'anchor',
     pos:p,vel:[0,0,0],aim:[0,0,-sg],status:'active',frozenAt:-99,pips:cls.pips,lastHit:-99,lastShot:-99,shade:false,regenAcc:0,cool:R()*1.2,scan:R()*.3,target:-1,seen:0,goal:p,limb:R()*6,
     boostT:0,boostCd:0,yaw:sg<0?Math.PI:0,pitch:0,stats:{freezes:0,breaks:0,frozen:0,hill:0,shots:0,hits:0}})}}
  for(const team of['blue','red'])assignRoles(S,team);
@@ -538,7 +595,7 @@ const eye=s=>V.add(s.pos,[0,.75,0]);
 
 // ---------- shooting
 function spawnBolt(S,s,d){const o=V.add(eye(s),V.mul(d,.9));const c=s.cls;
- S.bolts.push({id:++S._bid,pos:o,prev:o.slice(),trail:[o.slice()],vel:V.mul(d,RULES.boltSpeed),team:s.team,owner:s.id,breaker:c.breaker,life:c.range/RULES.boltSpeed});
+ S.bolts.push({id:++S._bid,pos:o,prev:o.slice(),trail:[o.slice()],vel:V.mul(d,RULES.boltSpeed),team:s.team,owner:s.id,breaker:c.breaker,life:c.range/RULES.boltSpeed,lag:(S.lagOf&&S.lagOf[s.id])||0});
  s.stats.shots++;s.cool=c.rate;s.lastShot=S.t;ev(S,{type:'shot',who:s.id,breaker:c.breaker})}
 function botFire(S,s,tg){const R=S.R,o=eye(s),L=V.dist(tg.pos,o);
  let d=gravAim(S,o,tg.pos,tg.vel,S.diff.grav,s.cls.range/RULES.boltSpeed);
@@ -546,8 +603,8 @@ function botFire(S,s,tg){const R=S.R,o=eye(s),L=V.dist(tg.pos,o);
  d=V.nrm([d[0]+(R()+R()-1)*sp,d[1]+(R()+R()-1)*sp,d[2]+(R()+R()-1)*sp]);spawnBolt(S,s,d);s.cool=s.cls.rate*S.diff.cool+R()*.25}
 // the human: fire along the view, with gentle aim assist (≈3.5° cone) for touch screens.
 // The cone counts if you aim at the enemy or along the bent path that would reach it; an assisted shot allows for all of the planets' bend
-function humanFire(S,s){if(s.cool>0||s.status!=='active')return false;let d=s.aim,best=null,bd=null,bc=Math.cos(.06);const o=eye(s),T=s.cls.range/RULES.boltSpeed;
- for(const f of act(S,foeOf(s.team))){const to=V.sub(f.pos,o),L=V.len(to);if(L>s.cls.range)continue;const u=V.mul(to,1/L);let c=V.dot(u,d),gd=null;
+function humanFire(S,s,assist){if(s.cool>0||s.status!=='active')return false;let d=s.aim,best=null,bd=null,bc=Math.cos(.06);const o=eye(s),T=s.cls.range/RULES.boltSpeed;
+ if(assist!==false)for(const f of act(S,foeOf(s.team))){const to=V.sub(f.pos,o),L=V.len(to);if(L>s.cls.range)continue;const u=V.mul(to,1/L);let c=V.dot(u,d),gd=null;
   if(V.dot(u,d)>.96){gd=gravAim(S,o,f.pos,f.vel,RULES.assistGrav,T);c=Math.max(c,V.dot(gd,d))}
   if(c>bc&&seen(S,s,f)&&los(S,o,f.pos)){bc=c;best=f;bd=gd}}
  if(best)d=bd||gravAim(S,o,best.pos,best.vel,RULES.assistGrav,T);
@@ -558,6 +615,21 @@ function hit(S,s,b){const by=S.soldiers[b.owner];s.lastHit=S.t;s.regenAcc=0;by.s
   s.vel=V.add(s.vel,V.mul(b.vel,b.breaker?.06:.02));return}
  s.status='frozen';s.frozenAt=S.t;s.stats.frozen++;by.stats.freezes++;s.vel=V.add(V.mul(s.vel,.5),V.mul(b.vel,.03));s.boostT=0;
  ev(S,{type:'freeze',who:s.id,by:by.id,pos:s.pos.slice()})}
+
+// ---------- humans (1.3): one input per seat; moveHuman is shared by the host's step and a client's own prediction
+// step input: {move,aim,fire,boost,assist} for a single human, or {seats:{[soldierId]:input}} for several
+const NOIN={move:[0,0,0]};
+const seatInput=(input,s)=>(input&&input.seats?input.seats[s.id]:input)||NOIN;
+function liveG(S,s){let gz=null;for(const zi of S.live){const z=S.L.zones[zi];if(z.v&&V.dist(s.pos,z.c)<z.r&&(!gz||V.dist(s.pos,z.c)<V.dist(s.pos,gz.c)))gz=z}return gz}
+function moveHuman(S,s,input,dt){s.boostT=Math.max(0,s.boostT-dt);s.boostCd=Math.max(0,s.boostCd-dt);
+ const gz=liveG(S,s),inG=!!gz;if(inG)s.vel=V.sub(s.vel,gz.v);if(input.aim)s.aim=V.nrm(input.aim);
+ if(input.boost&&s.cls.boost&&s.boostCd<=0){s.boostT=RULES.boostTime;s.boostCd=RULES.boostCd;const m=V.len(input.move||[0,0,0])>.1?V.nrm(input.move):s.aim;s.vel=V.add(s.vel,V.mul(m,s.cls.speed*.8));ev(S,{type:'boost',who:s.id})}
+ const T=s.cls.speed*(s.boostT>0?RULES.boostMul:1),mv=input.move||[0,0,0],ml=Math.min(1,V.len(mv));
+ const want=V.mul(ml>.02?V.nrm(mv):[0,0,0],T*ml);let acc=V.mul(V.sub(want,s.vel),ml>.02?2.4:.9);
+ const al=V.len(acc),mx0=s.cls.accel*(s.boostT>0?2:1)*1.15;if(al>mx0)acc=V.mul(acc,mx0/al);
+ if(inG){s.vel=V.add(s.vel,gz.v);const pull=1-ml,k=RULES.hillGravity;acc=V.add(acc,V.mul(V.add(V.mul(V.sub(gz.c,s.pos),k),V.mul(V.sub(gz.v,s.vel),2*Math.sqrt(k))),pull))}
+ s.vel=V.add(s.vel,V.mul(acc,dt));const sp=V.len(s.vel),mx=s.cls.speed*(s.boostT>0?RULES.boostMul:1)*1.05;if(sp>mx)s.vel=V.mul(s.vel,mx/sp);
+ s.pos=V.add(s.pos,V.mul(s.vel,dt));collide(S,s);s.limb+=dt*(1+sp*.25)}
 
 // ---------- step
 // input (human only): {move:[x,y,z] world, fire:bool, boost:bool, aim:[x,y,z]}
@@ -570,22 +642,14 @@ function step(S,dt,input){if(S.over)return;S.t+=dt;moveHills(S,dt);
     const c=V.sub(hill(S).c,s.pos);s.yaw=Math.atan2(c[0],-c[2]);s.pitch=0;s.aim=V.nrm(c);ev(S,{type:'respawn',who:s.id})}
    continue}
   if(s.pips<s.cls.pips&&S.t-s.lastHit>RULES.regenDelay){s.regenAcc+=dt;if(s.regenAcc>=s.cls.regen){s.pips++;s.regenAcc=0;ev(S,{type:'regen',who:s.id})}}
+  if(s.human){const inp=seatInput(input,s);s.cool-=dt;if(inp.aim)s.aim=V.nrm(inp.aim);if(inp.fire)humanFire(S,s,inp.assist);moveHuman(S,s,inp,dt);continue}
   s.boostT=Math.max(0,s.boostT-dt);s.boostCd=Math.max(0,s.boostCd-dt);s.cool-=dt;
-  // hill gravity: the live hill you are in (the nearest one if two overlap in Twin Orbit)
-  let gz=null;for(const zi of S.live){const z=S.L.zones[zi];if(z.v&&V.dist(s.pos,z.c)<z.r&&(!gz||V.dist(s.pos,z.c)<V.dist(s.pos,gz.c)))gz=z}
-  let acc;const inG=!!gz;if(inG)s.vel=V.sub(s.vel,gz.v);let ml=0;
-  if(s.human&&input){if(input.aim)s.aim=V.nrm(input.aim);
-   if(input.boost&&s.cls.boost&&s.boostCd<=0){s.boostT=RULES.boostTime;s.boostCd=RULES.boostCd;const m=V.len(input.move)>.1?V.nrm(input.move):s.aim;s.vel=V.add(s.vel,V.mul(m,s.cls.speed*.8));ev(S,{type:'boost',who:s.id})}
-   const T=s.cls.speed*(s.boostT>0?RULES.boostMul:1),mv=input.move||[0,0,0];ml=Math.min(1,V.len(mv));
-   const want=V.mul(ml>.02?V.nrm(mv):[0,0,0],T*ml);acc=V.mul(V.sub(want,s.vel),ml>.02?2.4:.9);
-   const al=V.len(acc),mx=s.cls.accel*(s.boostT>0?2:1)*1.15;if(al>mx)acc=V.mul(acc,mx/al);
-   if(input.fire)humanFire(S,s)}
-  else{if(s.cls.boost&&s.boostCd<=0&&V.dist(s.goal,s.pos)>24){s.boostT=RULES.boostTime;s.boostCd=RULES.boostCd;ev(S,{type:'boost',who:s.id})}acc=steer(S,s)}
-  if(inG){s.vel=V.add(s.vel,gz.v);const pull=s.human?1-ml:.6,k=RULES.hillGravity;
+  const gz=liveG(S,s);let acc;const inG=!!gz;if(inG)s.vel=V.sub(s.vel,gz.v);
+  if(s.cls.boost&&s.boostCd<=0&&V.dist(s.goal,s.pos)>24){s.boostT=RULES.boostTime;s.boostCd=RULES.boostCd;ev(S,{type:'boost',who:s.id})}acc=steer(S,s);
+  if(inG){s.vel=V.add(s.vel,gz.v);const pull=.6,k=RULES.hillGravity;
    acc=V.add(acc,V.mul(V.add(V.mul(V.sub(gz.c,s.pos),k),V.mul(V.sub(gz.v,s.vel),2*Math.sqrt(k))),pull))}
   s.vel=V.add(s.vel,V.mul(acc,dt));const sp=V.len(s.vel),mx=s.cls.speed*(s.boostT>0?RULES.boostMul:1)*1.05;if(sp>mx)s.vel=V.mul(s.vel,mx/sp);
   s.pos=V.add(s.pos,V.mul(s.vel,dt));collide(S,s);s.limb+=dt*(1+sp*.25);
-  if(s.human)continue;
   // bot targeting: enemies in or near a live hill first, then the closest in range it can see
   s.scan-=dt;if(s.scan<=0){s.scan=.28+S.R()*.1;let best=-1,bd=1e9;
    for(const o of S.soldiers){if(o.team===s.team||o.status!=='active')continue;const d=V.dist(o.pos,s.pos);if(d>s.cls.range)continue;
@@ -602,7 +666,7 @@ function step(S,dt,input){if(S.over)return;S.t+=dt;moveHills(S,dt);
    if(alive&&ringNear(S,np))for(const r of S.L.rocks){if(!r.on||V.dist(np,r.c)>=r.r)continue;alive=false;r.hp-=b.breaker?RULES.rockDmgPower:RULES.rockDmg;ev(S,{type:'impact',pos:np,team:b.team,breaker:b.breaker});
     if(r.hp<=0){r.on=false;ev(S,{type:'rock',pos:r.c.slice(),r:r.r,by:b.owner})}break}
    if(alive&&(Math.abs(np[0])>S.A[0]||Math.abs(np[1])>S.A[1]||Math.abs(np[2])>S.A[2]||octOut(S.L,np,0)>0)){alive=false;ev(S,{type:'impact',pos:np,team:b.team,breaker:b.breaker})}
-   if(alive)for(const s of S.soldiers){if(s.team===b.team||s.status!=='active')continue;if(V.dist(np,V.add(s.pos,[0,.2,0]))<(s.human?.9:.8)){alive=false;hit(S,s,b);break}}
+   if(alive)for(const s of S.soldiers){if(s.team===b.team||s.status!=='active')continue;const tp=b.lag&&S.rewind&&S.rewind(s.id,S.t-dt+(k+1)*h-b.lag)||s.pos;if(V.dist(np,V.add(tp,[0,.2,0]))<(s.human?.9:.8)){alive=false;hit(S,s,b);break}}
    b.pos=np}
   b.trail.push(b.pos.slice());if(b.trail.length>9)b.trail.shift();b.life-=dt;if(alive&&b.life>0)keep.push(b)}
  S.bolts=keep;
@@ -624,7 +688,7 @@ function step(S,dt,input){if(S.over)return;S.t+=dt;moveHills(S,dt);
  for(const team of['blue','red'])if(S.score[team]>=RULES.target){S.score[team]=RULES.target;S.winner=team;S.over=true}
  if(!S.over&&S.t>=RULES.timeLimit){S.over=true;S.winner=S.score.blue>S.score.red?'blue':S.score.red>S.score.blue?'red':'draw'}
  if(S.over)ev(S,{type:'end',winner:S.winner})}
-root.NG3={makeOrbitLayout,MAPS,MAP_IDS,rotM,octOut,orbitAt,ringPos,shadowOf,seen,gravAt,simBolt,gravAim,aimArc,PLANET_COL,V,RULES,MODES,MODE_IDS,CLASSES,CLASS_IDS,DIFF,HILLS,SPAWN_NAMES,create,step,act,los,eye,hill,liveZones,nextHill,hillLeft,inHill,foeOf};
+root.NG3={makeOrbitLayout,MAPS,MAP_IDS,rotM,octOut,orbitAt,ringPos,shadowOf,seen,gravAt,simBolt,gravAim,aimArc,PLANET_COL,V,RULES,MODES,MODE_IDS,CLASSES,CLASS_IDS,DIFF,HILLS,SPAWN_NAMES,create,step,moveHuman,moveHills,setLive,act,los,eye,hill,liveZones,nextHill,hillLeft,inHill,foeOf};
 })(typeof window!=='undefined'?window:globalThis);
 </script>
 <script>// NULL GATE renderer (1.2.1): a small self-contained WebGL engine drawing the World Builder look, now with textured planets,
@@ -970,9 +1034,9 @@ function deploy(){audio();const mine=[prefs.cls,...prefs.mates];
  $('#boostBtn').classList.toggle('hidden',!me.cls.boost);$('#meName').textContent=me.cls.name.toUpperCase();
  banner(S.live.length>1?`HILLS ${liveNames(S)} ARE LIVE`:`HILL ${G.hill(S).name} IS LIVE`,S.mode==='eclipse'?'Hold it · double points in shadow':S.mode==='ring'?'Hold it · rocks break, then refill':'Hold one, or both');SFX.zone();
  try{if(matchMedia('(pointer:coarse)').matches&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().then(()=>screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{})).catch(()=>{})}catch(e){}}
-$('#deploy').onclick=deploy;$('#again').onclick=deploy;
-$('#toHome').onclick=()=>{mode='home';S=null;showScreens()};
-$('#quit').onclick=()=>{$('#pause').classList.add('hidden');mode='home';S=null;showScreens()};
+$('#deploy').onclick=deploy;$('#again').onclick=()=>NET.role?NET.again():deploy();
+$('#toHome').onclick=()=>{if(NET.role){NET.exit('lobby');return}mode='home';S=null;showScreens()};
+$('#quit').onclick=()=>{$('#pause').classList.add('hidden');if(NET.role){NET.exit('quit');return}mode='home';S=null;showScreens()};
 function pause(){if(mode!=='match')return;mode='paused';releaseAll();$('#pause').classList.remove('hidden');try{document.exitPointerLock&&document.exitPointerLock()}catch(e){}}
 $('#pauseBtn').onclick=pause;
 // ---------- HUD editor
@@ -1082,7 +1146,8 @@ function handleEvents(Sx,live){for(const e of Sx.events){const who=e.who!=null?S
   if(live&&e.type==='end')endMatch()}
  Sx.events.length=0}
 function endMatch(){mode='end';releaseAll();try{document.exitPointerLock&&document.exitPointerLock()}catch(e){}
- const win=S.winner===prefs.team,draw=S.winner==='draw';$('#res').textContent=draw?'DRAW':win?'VICTORY':'DEFEAT';$('#res').className='res '+(win?'w':draw?'':'l');if(win)SFX.win();
+ if(NET.role)NET.endUi();else{$('#again').classList.remove('hidden');$('#toHome').textContent='Change squad'}
+ const win=S.winner===me.team,draw=S.winner==='draw';$('#res').textContent=draw?'DRAW':win?'VICTORY':'DEFEAT';$('#res').className='res '+(win?'w':draw?'':'l');if(win)SFX.win();
  $('#fs').innerHTML=`<span class="b">BLUE ${Math.floor(S.score.blue)}</span> · <span class="r">${Math.floor(S.score.red)} RED</span> <span style="color:var(--dim);font-size:14px">· ${Math.floor(S.t/60)}:${String(Math.floor(S.t%60)).padStart(2,'0')}</span>`;
  $('#tbl').innerHTML=S.soldiers.slice().sort((a,b)=>a.team===b.team?b.stats.freezes-a.stats.freezes:a.team==='blue'?-1:1).map(s=>`<tr class="${tcls(s)} ${s===me?'me':''}"><td>${NM[s.id]}</td><td>${s.cls.name}</td><td>${s.stats.freezes}</td><td>${s.stats.breaks}</td><td>${Math.round(s.stats.hill)} s</td><td>${s.stats.frozen}</td></tr>`).join('');
  setTimeout(showScreens,900)}
@@ -1099,7 +1164,7 @@ function updMarkers(){const e=eyePos();const lz=G.liveZones(S);MK.hills.forEach(
  for(const s of S.soldiers){if(s===me)continue;const d=MK[s.id];const p=R.project(V.add(s.pos,[0,1.5,0]));const mate=s.team===me.team;
   let vis=!p.behind&&s.status==='active'&&Math.abs(p.x)<1.05&&Math.abs(p.y)<1.05;if(vis&&!mate){const dd=V.dist(e,s.pos);vis=dd<95&&G.seen(S,me,s)&&G.los(S,e,s.pos)}
   const sy=(-p.y*.5+.5)*H;if(sy<96)vis=false;d.style.display=vis?'block':'none';if(!vis)continue;d.style.left=(p.x*.5+.5)*W+'px';d.style.top=sy+'px';
-  const key=s.pips+'|'+s.cls.id;if(d._k!==key){d._k=key;d.innerHTML=`${mate?s.cls.call:'▼'}<div class="p">${Array.from({length:s.pips},()=>'<i></i>').join('')}</div>`}}}
+  const hn=s.human&&NET.role?NM[s.id]:'';const key=s.pips+'|'+s.cls.id+'|'+hn;if(d._k!==key){d._k=key;d.innerHTML=`${hn?'<b class="hn">'+hn+'</b>':''}${mate?s.cls.call:'▼'}<div class="p">${Array.from({length:s.pips},()=>'<i></i>').join('')}</div>`}}}
 
 // ---------- HUD
 let lastSec=-1;
@@ -1125,31 +1190,282 @@ function hud(dt){const my=me.team,foe=G.foeOf(my);
 // ---------- loop
 function tickFx(dt){for(const p of fx.parts){p.p=V.add(p.p,V.mul(p.v,dt));p.v=V.mul(p.v,Math.exp(-2*dt));p.l-=dt}fx.parts=fx.parts.filter(p=>p.l>0);for(const k in fx.flash){fx.flash[k]-=dt*4;if(fx.flash[k]<=0)delete fx.flash[k]}}
 function loop(now){requestAnimationFrame(loop);const dt=Math.min(.1,(now-last)/1000);last=now;const t=now/1000;
+ if(mode==='spec'&&S){NET.frame(dt);tickFx(dt);SPEC.frame(dt);return}
  if(mode==='home'||!S){if(!demo)resetDemo();acc+=dt;let n=0;while(acc>=1/30&&n<4){G.step(demo,1/30);handleEvents(demo,false);acc-=1/30;n++}if(n===4)acc=0;if(demo.over)resetDemo();tickFx(dt);
   const a=t*.06,A=demo.L.A;{const k=[.85,.7,.8];const e=[Math.cos(a)*A[0]*k[0],A[1]*k[1],Math.sin(a)*A[2]*k[2]];R.setCamera(e,V.nrm(V.mul(e,-1)),[0,1,0],1.25,W/H)}
   R.frame({L:demo.L,S:demo,fx,t:demo.t},{fogN:200,fogF:420,bakeMs:10});return}
- if(mode==='match'){acc+=dt;let n=0;while(acc>=1/30&&n<5&&mode==='match'){const i=readInput();G.step(S,1/30,i);handleEvents(S,true);acc-=1/30;n++}if(n===5)acc=0}
+ if(NET.role)NET.frame(dt);else if(mode==='match'){acc+=dt;let n=0;while(acc>=1/30&&n<5&&mode==='match'){const i=readInput();G.step(S,1/30,i);handleEvents(S,true);acc-=1/30;n++}if(n===5)acc=0}
  tickFx(dt);kick=Math.max(0,kick-dt*7);fovKick=Math.max(0,fovKick-dt*1.5);bob+=(V.len(me.vel)*.0004-bob)*.1;
+ const _off=NET.role==='client'&&NET.offOn();
  const f=fwdOf();let eye=G.eye(me),fwd=f,showMe=false;
  if(me.status==='frozen'){const k=Math.min(1,(S.t-me.frozenAt)*1.5);eye=V.add(me.pos,V.add(V.mul(f,-5*k),[0,1.6*k,0]));fwd=V.nrm(V.sub(me.pos,eye));if(k<.05)fwd=f;showMe=true}
  else{me.yaw=yaw;me.pitch=pitch}
  R.setCamera(eye,fwd,[0,1,0],(W>H?1.15:1.35)+fovKick*.18,W/H);
  const arc=hudP.arc&&me.status==='active'?G.aimArc(S,Object.assign({},me,{aim:f})):null;
  R.frame({L:S.L,S,me,fx,t:S.t,arc,dots:hudP.dots},{viewmodel:!showMe,kick,bob:Math.sin(S.t*6)*bob,showMe});
- if(mode!=='end'||true)hud(dt)}
+ if(mode!=='end'||true)hud(dt);if(_off)NET.offOff()}
 showScreens();resize();requestAnimationFrame(loop);
+// ---------- spectator screen (1.3 · multiplayer step 4): the Host only host watches the match it runs.
+// The 3D view fills the screen (drag to orbit, wheel or pinch to zoom, tap a player to follow, tap empty space to stop).
+// Two movable, resizable windows sit on top: Top view (2D, looking down) and Gate view (2D, looking down the arena from behind a gate).
+const SPEC={};
+(function(){
+ const TCOL={blue:'#4c9dff',red:'#e8483a'};
+ let on=false,cam={yaw:.7,pitch:.55,dist:200,tgt:[0,0,0],follow:null},ptrs=new Map(),down=null,gateTeam='blue',ended=false,hiddenAt=0,LB={};
+ const el=id=>document.getElementById(id);
+ function open(){on=true;ended=false;const A=S.A;cam={yaw:.7,pitch:.45,dist:A[2]*.95,tgt:[0,0,0],follow:null};
+  el('spec').classList.remove('hidden');el('specEnd').classList.add('hidden');el('specLbl').innerHTML='';LB={};
+  for(const s of S.soldiers){const d=document.createElement('div');d.className='sLbl '+s.team;el('specLbl').appendChild(d);LB[s.id]=d}
+  for(const w of['wTop','wGate']){el(w).classList.remove('hidden')}
+  drawStrip()}
+ function close(){on=false;const sp=el('spec');if(sp)sp.classList.add('hidden')}
+ // ---------- 3D camera
+ function camera(dt){if(cam.follow!=null){const s=S.soldiers[cam.follow];cam.tgt=V.lerp(cam.tgt,s.pos,Math.min(1,dt*6))}else cam.tgt=V.lerp(cam.tgt,[0,0,0],Math.min(1,dt*2));
+  const cp=Math.cos(cam.pitch);let e=V.add(cam.tgt,V.mul([Math.sin(cam.yaw)*cp,Math.sin(cam.pitch),Math.cos(cam.yaw)*cp],cam.dist));
+  // the arenas are enclosed: keep the camera inside the walls
+  const A=S.A;e=[0,1,2].map(k=>Math.max(-A[k]+2,Math.min(A[k]-2,e[k])));
+  R.setCamera(e,V.nrm(V.sub(cam.tgt,e)),[0,1,0],1.15,W/H);return e}
+ const gl=document.getElementById('gl');
+ gl.addEventListener('pointerdown',e=>{if(!on)return;ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});down={x:e.clientX,y:e.clientY,t:performance.now(),moved:0};try{gl.setPointerCapture(e.pointerId)}catch(x){}});
+ gl.addEventListener('pointermove',e=>{if(!on||!ptrs.has(e.pointerId))return;const p=ptrs.get(e.pointerId),dx=e.clientX-p.x,dy=e.clientY-p.y;
+  if(ptrs.size===1){cam.yaw-=dx*.006;cam.pitch=Math.max(-1.2,Math.min(1.45,cam.pitch+dy*.006))}
+  else if(ptrs.size===2){const [a,b]=[...ptrs.values()],d0=Math.hypot(a.x-b.x,a.y-b.y);p.x=e.clientX;p.y=e.clientY;const [c,d]=[...ptrs.values()],d1=Math.hypot(c.x-d.x,c.y-d.y);if(d0>10&&d1>10)zoom(d0/d1);return}
+  p.x=e.clientX;p.y=e.clientY;if(down)down.moved+=Math.abs(dx)+Math.abs(dy)});
+ const up=e=>{if(!on)return;const tap=down&&ptrs.size===1&&down.moved<8&&performance.now()-down.t<400;ptrs.delete(e.pointerId);if(tap)pick(e.clientX,e.clientY);if(!ptrs.size)down=null};
+ gl.addEventListener('pointerup',up);gl.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId)});
+ // wheel zoom over the 3D view (passive: the page never scrolls, so there is nothing to prevent)
+ addEventListener('wheel',e=>{if(on&&e.target===gl)zoom(Math.exp(e.deltaY*.0012))},{passive:true});
+ function zoom(k){const A=S.A,mx=A[2]*1.6;cam.dist=Math.max(6,Math.min(mx,cam.dist*k))}
+ function pick(x,y){let best=null,bd=44;for(const s of S.soldiers){if(s.status!=='active')continue;const p=R.project(V.add(s.pos,[0,.4,0]));if(p.behind)continue;const d=Math.hypot((p.x*.5+.5)*W-x,(-p.y*.5+.5)*H-y);if(d<bd){bd=d;best=s.id}}
+  cam.follow=best;if(best!=null&&cam.dist>40)cam.dist=22;drawStrip()}
+ // ---------- 2D windows
+ function fit(cv){const r=cv.getBoundingClientRect(),d=Math.min(2,devicePixelRatio||1),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(cv.width!==w||cv.height!==h){cv.width=w;cv.height=h}const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,r.width,r.height);return[c,r.width,r.height]}
+ // pr(p) -> [x, y, depth 0..1]; the same drawing for both views
+ function draw2d(cv,pr,sc){const [c,w,h]=fit(cv);c.save();c.translate(w/2,h/2);
+  c.strokeStyle='#ffffff30';c.lineWidth=1;const A=S.A;const q=[pr([-A[0],-A[1],-A[2]]),pr([A[0],A[1],A[2]])];c.strokeRect(Math.min(q[0][0],q[1][0]),Math.min(q[0][1],q[1][1]),Math.abs(q[1][0]-q[0][0]),Math.abs(q[1][1]-q[0][1]));
+  c.fillStyle='#8fa3c833';for(const o of S.L.boxes){const a=pr(V.sub(o.c,o.h)),b=pr(V.add(o.c,o.h));c.fillRect(Math.min(a[0],b[0]),Math.min(a[1],b[1]),Math.abs(b[0]-a[0])||1,Math.abs(b[1]-a[1])||1)}
+  for(const p of S.L.planets){const a=pr(p.c);c.fillStyle='#b9c4dd40';c.beginPath();c.arc(a[0],a[1],Math.max(1.5,p.r*sc),0,7);c.fill()}
+  if(S.L.rocks)for(const r of S.L.rocks){if(!r.on)continue;const a=pr(r.c);c.fillStyle='#c8b49a70';c.fillRect(a[0]-1,a[1]-1,2,2)}
+  G.liveZones(S).forEach((z,k)=>{const a=pr(z.c),o=S.owners[k];c.strokeStyle=o==='blue'?TCOL.blue:o==='red'?TCOL.red:'#ffd36a';c.lineWidth=2;c.beginPath();c.arc(a[0],a[1],Math.max(3,z.r*sc),0,7);c.stroke();c.fillStyle='#ffd36a';c.font='700 11px "Chakra Petch",monospace';c.textAlign='center';c.fillText(z.name,a[0],a[1]+4)});
+  c.lineWidth=1.5;for(const b of S.bolts){const a=pr(b.pos),t=pr(V.sub(b.pos,V.mul(b.vel,.06)));c.strokeStyle=b.breaker?'#ffd36a':TCOL[b.team];c.beginPath();c.moveTo(t[0],t[1]);c.lineTo(a[0],a[1]);c.stroke()}
+  const ss=S.soldiers.slice().sort((a,b)=>pr(b.pos)[2]-pr(a.pos)[2]);
+  for(const s of ss){const a=pr(s.pos),f=pr(V.add(s.pos,s.aim)),ang=Math.atan2(f[1]-a[1],f[0]-a[0]),k=1-a[2]*.45,fz=s.status==='frozen';
+   c.save();c.translate(a[0],a[1]);c.globalAlpha=fz?.35:1;c.rotate(ang);c.fillStyle=fz?'#d6ecfc':TCOL[s.team];c.beginPath();c.moveTo(9*k,0);c.lineTo(-6*k,5.5*k);c.lineTo(-3*k,0);c.lineTo(-6*k,-5.5*k);c.closePath();c.fill();
+   if(cam.follow===s.id){c.strokeStyle='#fff';c.lineWidth=1.5;c.stroke()}c.restore();
+   c.globalAlpha=fz?.4:.95;c.fillStyle='#e8eefc';c.font='600 10px "Chakra Petch",monospace';c.textAlign='center';c.fillText((s.human?NM[s.id]:s.cls.call).slice(0,10)+' '+(s.cls.id==='shield'?'◆':s.cls.id==='speed'?'»':'✦'),a[0],a[1]-9*k-2);c.globalAlpha=1}
+  c.restore()}
+ function topView(){const cv=el('cvTop'),r=cv.getBoundingClientRect(),A=S.A,sc=Math.min(r.width/(2*A[0]),r.height/(2*A[2]))*.92;
+  draw2d(cv,p=>[p[0]*sc,p[2]*sc,(A[1]-p[1])/(2*A[1])],sc)}
+ function gateView(){const cv=el('cvGate'),r=cv.getBoundingClientRect(),A=S.A,sc=Math.min(r.width/(2*A[0]),r.height/(2*A[1]))*.9;
+  // which end is this team's gate: the side its spawns are on (length = the longest axis, z)
+  const bz=S.spawns[gateTeam].reduce((m,p)=>m+p[2],0),f=bz<0?1:-1;// looking from that end toward the other
+  draw2d(cv,p=>[-f*p[0]*sc,-p[1]*sc,(p[2]*f+A[2])/(2*A[2])],sc);
+  el('gateLbl').textContent=`from behind the ${gateTeam} gate`}
+ // ---------- labels over soldiers in the 3D view
+ function labels(){for(const s of S.soldiers){const d=LB[s.id];const p=R.project(V.add(s.pos,[0,1.4,0]));const vis=!p.behind&&Math.abs(p.x)<1.05&&Math.abs(p.y)<1.05;d.style.display=vis?'block':'none';if(!vis)continue;
+  d.style.left=(p.x*.5+.5)*W+'px';d.style.top=(-p.y*.5+.5)*H+'px';const t=(s.human?NM[s.id]:s.cls.call)+(s.status==='frozen'?' ❄':'');if(d._t!==t){d._t=t;d.textContent=t}d.classList.toggle('fol',cam.follow===s.id)}}
+ // ---------- strip: score, hill, clock, players
+ let stripT=0;
+ function drawStrip(){if(!S)return;const twin=S.live.length>1,left=Math.ceil(G.hillLeft(S)),rem=Math.max(0,Math.ceil(G.RULES.timeLimit-S.t));
+  el('spB').textContent=Math.floor(S.score.blue);el('spR').textContent=Math.floor(S.score.red);
+  el('spFB').style.width=(S.score.blue/G.RULES.target*50)+'%';el('spFR').style.width=(S.score.red/G.RULES.target*50)+'%';
+  const o=S.owners[0];el('spHill').innerHTML=`${twin?'HILLS':'HILL'} ${twin?G.HILLS[S.stage]:G.hill(S).name} · ${left}s <span class="own ${o==='contested'?'cont':o==='blue'?'mine':o==='red'?'theirs':'none'}">${o==='contested'?'CONTESTED':o?o.toUpperCase():'EMPTY'}</span>${S.hillShade?' <span class="own cont">SHADOW ×2</span>':''}`;
+  el('spClock').textContent=`${Math.floor(rem/60)}:${String(rem%60).padStart(2,'0')}`;
+  const pl=NET.specPlayers();el('spPlayers').innerHTML=pl.length?pl.map(p=>`<span class="spP ${p.team}"><b>${p.name}</b> ${p.input==='touch'?'TOUCH':'KB+M'} <i class="${p.drop?'r':p.ping==null?'':p.ping<80?'g':p.ping<160?'y':'r'}">${p.drop?'DROPPED':p.ping==null?'…':p.ping+' ms'}</i></span>`).join(''):'<span class="spP">No players: bots only</span>';
+  el('spFollow').textContent=cam.follow!=null?`Following ${S.soldiers[cam.follow].human?NM[cam.follow]:NM[cam.follow]||S.soldiers[cam.follow].cls.call} · tap empty space to stop`:'Drag to orbit · wheel or pinch to zoom · tap a player to follow'}
+ function frame(dt){if(!on||!S)return;camera(dt);
+  R.frame({L:S.L,S,fx,t:S.t},{fogN:400,fogF:900,bakeMs:10});labels();
+  if(!el('wTop').classList.contains('hidden'))topView();if(!el('wGate').classList.contains('hidden'))gateView();
+  stripT-=dt;if(stripT<=0){stripT=.25;drawStrip()}
+  if(S.over&&!ended){ended=true;const w=S.winner;el('specRes').innerHTML=w==='draw'?'DRAW':`<span class="${w==='blue'?'b':'r'}">${w.toUpperCase()} WINS</span>`;el('specScore').textContent=`${Math.floor(S.score.blue)} – ${Math.floor(S.score.red)}`;el('specEnd').classList.remove('hidden');SFX.win()}}
+ // ---------- window moving (drag the title bar), closing, reopening
+ for(const w of document.querySelectorAll('#spec .win')){const hd=w.querySelector('.wh');let st=null;
+  hd.addEventListener('pointerdown',e=>{if(e.target.closest('button'))return;e.preventDefault();const r=w.getBoundingClientRect();st={x:e.clientX-r.left,y:e.clientY-r.top};hd.setPointerCapture(e.pointerId)});
+  hd.addEventListener('pointermove',e=>{if(!st)return;w.style.left=Math.max(0,Math.min(innerWidth-60,e.clientX-st.x))+'px';w.style.top=Math.max(0,Math.min(innerHeight-30,e.clientY-st.y))+'px';w.style.right='auto';w.style.bottom='auto'});
+  hd.addEventListener('pointerup',()=>{st=null});
+  w.querySelector('.wx').onclick=()=>w.classList.add('hidden')}
+ el('spTop').onclick=()=>el('wTop').classList.toggle('hidden');el('spGate').onclick=()=>el('wGate').classList.toggle('hidden');
+ el('gateFlip').onclick=()=>{gateTeam=gateTeam==='blue'?'red':'blue'};
+ el('spQuit').onclick=()=>NET.exit('quit');el('specLobby').onclick=()=>NET.exit('lobby');el('specAgain').onclick=()=>NET.again();
+ // browsers slow background tabs: tell the host when this tab was hidden
+ document.addEventListener('visibilitychange',()=>{if(!on)return;if(document.hidden)hiddenAt=performance.now();else if(hiddenAt){const s=Math.round((performance.now()-hiddenAt)/1000);hiddenAt=0;if(s>=2){const n=el('spWarn');n.textContent=`This tab was in the background for ${s} s. Keep it in front: browsers can slow background tabs, which slows the match for everyone.`;n.classList.remove('hidden');setTimeout(()=>n.classList.add('hidden'),7000)}}});
+ Object.defineProperties(SPEC,Object.getOwnPropertyDescriptors({open,close,frame,get on(){return on},get cam(){return cam},pick}));
+})();
+
+// ---------- network play (1.3 · multiplayer step 2)
+// Host: runs the match (30 steps a second) with one input per seat and sends a snapshot every 2nd step (15 a second).
+// Client: sends its controls every step (30 a second), predicts its own soldier with the engine's moveHuman and
+// corrects to each snapshot (replaying controls the host hasn't used yet); everyone else is drawn 130 ms in the past,
+// smoothly between two snapshots.
+const NET={role:null};
+(function(){
+ const DT=1/30,DELAY=.13,SNAP_EVERY=2,STALE_MS=300,MAXLAG=.3;
+ const r2=x=>Math.round(x*100)/100,fl2=x=>Math.floor(x*100)/100,r3=x=>Math.round(x*1000)/1000,a2=a=>a.map(r2),a3=a=>a.map(r3);
+ const lay={};const layoutFor=(m,mp)=>lay[m+'|'+mp]||(lay[m+'|'+mp]=G.makeOrbitLayout(1,m,mp));
+ let hist=[],present=new Set(),pings={},lastSnapAt=0,boardOn=false,boardT=0,o=null,tick=0,evOut=[],seats={},ticker=null,lastPump=0,pending=[],seq=0,snaps=[],off=null,err=[0,0,0],cool=0,nacc=0,trails={},assist=true,saved=null;
+ const stats={snapsIn:0,bytesIn:0,inputsOut:0,corrections:0,maxErr:0,snapsOut:0,bytesOut:0};
+ NET.stats=stats;
+
+ function start(opt){stop();o=opt;NET.role=opt.role;const c=opt.cfg;audio();
+  S=G.create({mode:c.mode,layout:layoutFor(c.mode,c.map),seed:c.seed,blue:c.blue,red:c.red,humans:c.humans,diff:c.diff});
+  // seat null = the Host only host: no soldier, the spectator screen instead
+  me=opt.seat==null?null:S.soldiers[opt.seat];if(me){yaw=me.yaw;pitch=0}NM=names(S);for(const h of c.humans)NM[h.id]=me&&h.id===me.id?'You':h.name;
+  fx.parts.length=0;fx.flash={};feedEl.innerHTML='';assist=!!opt.assist;
+  lastC=0;tick=0;evOut=[];seats={};pending=[];seq=0;snaps=[];off=null;err=[0,0,0];cool=0;nacc=0;trails={};saved=null;lastPump=performance.now();
+  for(const k in stats)stats[k]=0;
+  hist=[];present=new Set(c.humans.map(h=>h.id));pings={};lastSnapAt=performance.now();
+  if(opt.role==='host'){for(const h of c.humans)if(!me||h.id!==me.id)seats[h.id]={pid:h.pid,q:[],last:null,lastAt:0,ack:0,assist:h.input==='touch'};
+   S.lagOf={};S.rewind=rewind}
+  else S.bolts=[];
+  startTicker();
+  releaseAll();acc=0;$('#pause').classList.add('hidden');$('#mp').classList.add('hidden');
+  if(!me){mode='spec';showScreens();resize();SPEC.open();return}
+  mode='match';showScreens();resize();buildMarkers();
+  $('#boostBtn').classList.toggle('hidden',!me.cls.boost);$('#meName').textContent=me.cls.name.toUpperCase();$('#netPing').classList.remove('hidden');
+  banner(S.live.length>1?`HILLS ${liveNames(S)} ARE LIVE`:`HILL ${G.hill(S).name} IS LIVE`,`You're ${me.team.toUpperCase()} · ${S.mode==='eclipse'?'double points in shadow':S.mode==='ring'?'rocks break, then refill':'hold one, or both'}`);SFX.zone()}
+ function stop(){stopTicker();SPEC.close();NET.role=null;o=null;snaps=[];pending=[];seats={};boardOn=false;for(const id of['#netPing','#board','#netWarn']){const el=$(id);if(el)el.classList.add('hidden')}const hd=$('#hud');if(hd)hd.classList.remove('boardOn')}
+
+ // ---------- host
+ // a worker clock runs the match at 30 steps a second whatever this tab's frame rate, and keeps it running in the background
+ // (browsers slow page timers and animation frames there); pump() goes by elapsed time, so extra calls from the frame loop are harmless
+ function startTicker(){stopTicker();try{ticker=new Worker(URL.createObjectURL(new Blob(['setInterval(()=>postMessage(0),33)'],{type:'text/javascript'})));ticker.onmessage=()=>{if(NET.role==='host')pump();else if(NET.role==='client')cpump()}}catch(e){ticker=null}}
+ function stopTicker(){if(ticker){try{ticker.terminate()}catch(e){}ticker=null}}
+ function pump(){const n=performance.now(),dt=Math.min(.25,(n-lastPump)/1000);lastPump=n;nacc+=dt;let k=0;while(nacc>=DT&&k<8){hostTick();nacc-=DT;k++}if(k===8)nacc=0}
+ function hostTick(){if(!S||S.over)return;const now=performance.now(),inp={};
+  if(me)inp[me.id]=mode==='match'?Object.assign(readInput(),{assist}):{move:[0,0,0]};
+  for(const id in seats){const st=seats[id];let i;
+   if(st.q.length){i=st.q.shift();st.last=i;st.ack=i.seq}
+   else if(st.last&&now-st.lastAt<STALE_MS)i={move:st.last.move,aim:st.last.aim,fire:st.last.fire};// a late packet: keep going the same way
+   else i={move:[0,0,0]};// nobody there: drift (bot takeover comes in step 6)
+   i.assist=st.assist;inp[id]=i;
+   // fair hits: how far behind this player's screen is (their drawn match time vs now), capped at 0.3 s
+   S.lagOf[id]=i.rt!=null?Math.max(0,Math.min(MAXLAG,S.t+DT-i.rt)):0}
+  G.step(S,DT,{seats:inp});hist.push([S.t,S.soldiers.map(s=>s.pos.slice())]);if(hist.length>150)hist.shift();
+  for(const e of S.events)evOut.push(packEv(e));
+  handleEvents(S,!!me);// the spectator gets the effects without the first-person sounds and results screen
+  tick++;if(tick%SNAP_EVERY===0||S.over)sendSnap()}
+ function packEv(e){const q={};for(const k in e){const v=e[k];q[k]=Array.isArray(v)?a2(v):typeof v==='number'?r3(v):v}return q}
+ function sendSnap(){
+  const so=S.soldiers.map(s=>[s.status==='active'?1:0,...a2(s.pos),...a2(s.vel),...a3(s.aim),s.pips,r2(s.frozenAt),r2(s.lastHit),r2(s.regenAcc),r2(s.boostT),r2(s.boostCd),s.shade?1:0,r2(s.lastShot)]);
+  const b=S.bolts.map(x=>[x.id,...a2(x.pos),...a2(x.vel),x.team==='blue'?0:1,x.owner,x.breaker?1:0,r2(x.life)]);
+  const m={t:'s',n:tick,T:r3(S.t),sc:[fl2(S.score.blue),fl2(S.score.red)],st:S.stage,lv:S.live,z:S.zone,zt:r3(S.zoneT),ow:S.owners,hs:S.hillShade?1:0,so,b,ev:evOut};
+  if(S.L.rocks)m.rk=S.L.rocks.reduce((a,r,i)=>(r.on||a.push(i),a),[]);
+  if(tick%30===0||S.over)m.stt=S.soldiers.map(s=>[s.stats.freezes,s.stats.breaks,s.stats.frozen,r2(s.stats.hill),s.stats.shots,s.stats.hits]);
+  if(S.over){m.ov=1;m.w=S.winner}
+  evOut=[];stats.snapsOut++;if(stats.snapsOut%15===1)stats.bytesOut=JSON.stringify(m).length;
+  for(const id in seats){const st=seats[id];o.sendTo(st.pid,Object.assign({},m,{ack:st.ack}))}}
+ // where soldier id was at match time t (host history, 30 entries a second); null = use where it is now
+ function rewind(id,t){for(let i=hist.length-1;i>0;i--){const a=hist[i-1],b=hist[i];if(a[0]<=t){if(t>=b[0])return null;const al=(t-a[0])/(b[0]-a[0]);return V.lerp(a[1][id],b[1][id],al)}}return hist.length?hist[0][1][id]:null}
+ // a client's controls (validated: this is all a client can send)
+ function input(seatId,d){if(NET.role!=='host')return;const st=seats[seatId];if(!st||!d)return;
+  const vec=(v,def)=>Array.isArray(v)&&v.length===3&&v.every(Number.isFinite)?v.slice():def;
+  let mv=vec(d.m,[0,0,0]);const l=V.len(mv);if(l>1)mv=V.mul(mv,1/l);
+  let aim=vec(d.a,null);if(aim&&V.len(aim)<1e-3)aim=null;
+  st.lastAt=performance.now();st.q.push({seq:+d.q||0,move:mv,aim,fire:!!d.f,boost:!!d.b,rt:Number.isFinite(d.rt)?d.rt:null});
+  while(st.q.length>10){const x=st.q.shift();if(x.boost)st.q[0].boost=true;if(x.fire)st.q[0].fire=true;st.ack=x.seq}}
+
+ // ---------- client
+ const setT=t=>{S.t=t;G.moveHills(S,0)};
+ function snap(m){if(NET.role!=='client'||!S||!m||!m.so)return;const now=performance.now()/1000,smp=m.T-now;
+  stats.snapsIn++;lastSnapAt=performance.now();
+  off=off==null?smp:smp>off?off+(smp-off)*.25:off+(smp-off)*.02;// the host clock: catch up fast, slow down gently
+  if(snaps.length&&m.T<=snaps[snaps.length-1].T&&!m.ov)return;
+  snaps.push(m);if(snaps.length>12)snaps.shift();
+  S.score.blue=m.sc[0];S.score.red=m.sc[1];S.stage=m.st;S.live=m.lv;S.zone=m.z;S.zoneT=m.zt;S.owners=m.ow;S.zoneOwner=m.ow[0];S.hillShade=!!m.hs;
+  if(m.rk&&S.L.rocks){const gone=new Set(m.rk);S.L.rocks.forEach((r,i)=>r.on=!gone.has(i))}
+  if(m.stt)m.stt.forEach((a,i)=>{const st=S.soldiers[i].stats;st.freezes=a[0];st.breaks=a[1];st.frozen=a[2];st.hill=a[3];st.shots=a[4];st.hits=a[5]});
+  m.so.forEach((a,i)=>{const s=S.soldiers[i];const was=s.status;s.status=a[0]?'active':'frozen';s.pips=a[10];s.frozenAt=a[11];s.lastHit=a[12];s.regenAcc=a[13];s.shade=!!a[16];s.lastShot=a[17];
+   if(s!==me){s.boostT=a[14];s.boostCd=a[15];return}
+   // me: take the host's word, then replay the controls it hasn't used yet
+   pending=pending.filter(p=>p.seq>(m.ack||0));
+   const before=s.pos.slice();s.pos=a.slice(1,4);s.vel=a.slice(4,7);s.boostT=a[14];s.boostCd=a[15];
+   if(s.status==='active'){const n=S.events.length,t0=S.t;setT(now+off);for(const p of pending)G.moveHuman(S,s,p.i,DT);S.events.length=n;setT(t0)}else pending=[];
+   const d=V.sub(before,s.pos),dl=V.len(d);
+   if(was==='active'&&s.status==='active'&&dl<3){err=V.add(err,d);if(dl>.05)stats.corrections++;stats.maxErr=Math.max(stats.maxErr,dl)}else err=[0,0,0]});
+  if(m.ov){S.over=true;S.winner=m.w;S.t=m.T}
+  for(const e of m.ev||[]){if(e.who===me.id&&(e.type==='shot'||e.type==='boost'))continue;// already shown when you pressed it
+   if(e.type==='respawn'&&e.who===me.id){const c=V.sub(G.hill(S).c,me.pos);me.yaw=Math.atan2(c[0],-c[2])}
+   S.events.push(e)}
+  handleEvents(S,true)}
+ function clientTick(sNow){const playing=mode==='match'&&!S.over;
+  const i=playing?readInput():{move:[0,0,0],aim:fwdOf(),fire:false,boost:false};
+  const q=++seq;o.send({t:'i',q,m:a2(i.move),a:a3(i.aim),f:i.fire?1:0,b:i.boost?1:0,rt:r3(S.t)});stats.inputsOut++;
+  pending.push({seq:q,i});if(pending.length>120)pending.shift();
+  cool-=DT;
+  if(me.status==='active'&&!S.over){const t0=S.t;setT(sNow);const n0=S.events.length;G.moveHuman(S,me,i,DT);setT(t0);
+   if(i.fire&&cool<=0){cool=me.cls.rate;S.events.push({type:'shot',who:me.id,breaker:me.cls.breaker,t:S.t})}// kick + sound now; the bolt comes from the host
+   if(S.events.length>n0)handleEvents(S,true)}}
+ const lerp3=(a,i,b,al)=>[a[i]+(b[i]-a[i])*al,a[i+1]+(b[i+1]-a[i+1])*al,a[i+2]+(b[i+2]-a[i+2])*al];
+ function interp(rt,dt){if(!snaps.length)return;let a=snaps[0],b=snaps[snaps.length-1];
+  if(rt>=b.T)a=b;else if(rt<=a.T)b=a;else for(let k=snaps.length-1;k>0;k--)if(snaps[k-1].T<=rt){a=snaps[k-1];b=snaps[k];break}
+  const span=b.T-a.T,al=span>0?Math.min(1,Math.max(0,(rt-a.T)/span)):1,ex=a===b?Math.min(.1,Math.max(0,rt-b.T)):0;
+  setT(Math.min(rt,b.T+.1));
+  S.soldiers.forEach((s,i)=>{if(s===me)return;const A=a.so[i],B=b.so[i];const jump=Math.hypot(B[1]-A[1],B[2]-A[2],B[3]-A[3])>8;
+   const k=jump?1:al;s.pos=lerp3(A,1,B,k);s.vel=lerp3(A,4,B,k);s.aim=V.nrm(lerp3(A,7,B,k));if(ex)s.pos=V.add(s.pos,V.mul(s.vel,ex));
+   s.limb+=dt*(1+V.len(s.vel)*.25)});
+  const am=new Map(a.b.map(x=>[x[0],x])),out=[],keep={};
+  for(const B of b.b){const A=am.get(B[0]);if(!A&&a!==b&&al<.5)continue;// not fired yet at this moment
+   let p=A?lerp3(A,1,B,al):[B[1],B[2],B[3]];if(ex)p=V.add(p,V.mul([B[4],B[5],B[6]],ex));
+   const tr=trails[B[0]]||[p.slice()];tr.push(p.slice());if(tr.length>9)tr.shift();keep[B[0]]=tr;
+   out.push({id:B[0],pos:p,prev:tr[tr.length-2],trail:tr,vel:[B[4],B[5],B[6]],team:B[7]?'red':'blue',owner:B[8],breaker:!!B[9],life:B[10]})}
+  trails=keep;S.bolts=out}
+
+ // called from the game loop every frame
+ function frame(dt){if(!S)return;
+  boardT-=dt;if(boardOn&&boardT<=0){boardT=.5;drawBoard()}
+  if(NET.role==='host'){pump();return}
+  if(off==null)return;// waiting for the first snapshot
+  cpump();
+  const sNow=performance.now()/1000+off;
+  interp(sNow-DELAY,dt);err=V.mul(err,Math.exp(-dt*9));
+  const stall=!S.over&&performance.now()-lastSnapAt>700;const w=$('#netWarn');if(w.classList.contains('hidden')===stall)w.classList.toggle('hidden',!stall)}
+ // the client's 30-a-second clock: send controls, predict yourself (driven by the worker clock and by frames, by elapsed time)
+ let lastC=0;function cpump(){if(off==null||!S)return;const n=performance.now(),dt=lastC?Math.min(.25,(n-lastC)/1000):0;lastC=n;
+  const sNow=n/1000+off;nacc+=dt;let k=0;while(nacc>=DT&&k<8){clientTick(sNow);nacc-=DT;k++}if(k===8)nacc=0}
+ // draw your own soldier with the leftover correction folded in (smooth instead of a snap)
+ function offOn(){if(V.len(err)<1e-3)return false;saved=me.pos;me.pos=V.add(me.pos,err);return true}
+ function offOff(){if(saved){me.pos=saved;saved=null}}
+ function endUi(){$('#again').classList.toggle('hidden',NET.role!=='host');$('#toHome').textContent='Back to lobby'}
+ function again(){if(o&&o.onAgain)o.onAgain()}
+ function exit(reason){const cb=o&&o.onExit;stop();releaseAll();$('#pause').classList.add('hidden');try{document.exitPointerLock&&document.exitPointerLock()}catch(e){}mode='home';S=null;showScreens();if(cb)cb(reason)}
+ // the room went away (host left, connection lost, match aborted): drop back to the menus
+ function drop(){if(!NET.role)return;stop();releaseAll();$('#pause').classList.add('hidden');try{document.exitPointerLock&&document.exitPointerLock()}catch(e){}mode='home';S=null;showScreens()}
+ // the spectator strip: every human player with their team, input and ping
+ function specPlayers(){if(!o)return[];return o.cfg.humans.map(h=>({name:h.name,team:h.team,input:h.input,ping:pings[h.id],drop:!present.has(h.id)}))}
+ function setRoster(r){if(!NET.role||!S||!o)return;const byPid=new Map((r.players||[]).map(p=>[p.pid,p]));const now=new Set();
+  for(const h of o.cfg.humans){const p=byPid.get(h.pid);if(p){now.add(h.id);pings[h.id]=p.host?0:p.ping}}
+  if(mode==='match'||mode==='paused')for(const h of o.cfg.humans){if(me&&h.id===me.id)continue;const s=S.soldiers[h.id],tc=s.team==='blue'?'b':'r';
+   if(present.has(h.id)&&!now.has(h.id))feed(`<span class="${tc}">${NM[h.id]}</span> disconnected`);
+   else if(!present.has(h.id)&&now.has(h.id))feed(`<span class="${tc}">${NM[h.id]}</span> rejoined`)}
+  present=now;if(boardOn)drawBoard()}
+ // ---------- in-match player board (hold Tab, or tap the ping readout)
+ function drawBoard(){if(!S||!o)return;const hum=new Map(o.cfg.humans.map(h=>[h.id,h]));
+  const row=s=>{const h=hum.get(s.id),st=s.stats;let tag;
+   if(!h)tag='<i class="bot">BOT</i>';else if(s===me)tag=`<i>${NET.role==='host'?'HOST':pings[s.id]!=null?pings[s.id]+' ms':'…'}</i>`;
+   else if(!present.has(s.id))tag='<i class="drop">DROPPED</i>';else{const p=pings[s.id];tag=`<i class="${p==null?'':p<80?'g':p<160?'y':'r'}">${hum.get(s.id)&&o.cfg.humans[0].id===s.id&&NET.role!=='host'?'HOST':p==null?'…':p+' ms'}</i>`}
+   return`<div class="bdR${s===me?' me':''}${s.status==='frozen'?' fz':''}"><span class="nm">${NM[s.id]}</span><span>${s.cls.call}</span><span>${st.freezes}</span><span>${Math.round(st.hill)}s</span>${tag}</div>`};
+  const team=t=>`<div class="bdT ${t}"><div class="bdR h"><span class="nm">${t==='blue'?'BLUE':'RED'} · ${Math.floor(S.score[t])}</span><span>SPEC</span><span>FRZ</span><span>HILL</span><i>PING</i></div>${S.soldiers.filter(s=>s.team===t).map(row).join('')}</div>`;
+  $('#board').innerHTML=team(me.team)+team(G.foeOf(me.team))+'<p>Hold Tab or tap the ping readout to close</p>'}
+ function board(on){if(on==null)on=!boardOn;boardOn=on&&!!NET.role;$('#board').classList.toggle('hidden',!boardOn);$('#hud').classList.toggle('boardOn',boardOn);if(boardOn){boardT=.5;drawBoard()}}
+ addEventListener('keydown',e=>{if(NET.role&&e.key==='Tab'){e.preventDefault();if(!e.repeat)board(true)}});
+ addEventListener('keyup',e=>{if(NET.role&&e.key==='Tab'){e.preventDefault();board(false)}});
+ $('#netPing').addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();board()});
+ Object.defineProperties(NET,Object.getOwnPropertyDescriptors({specPlayers,setRoster,board,get boardOn(){return boardOn},start,stop,frame,input,snap,offOn,offOff,endUi,again,exit,drop,get pending(){return pending.length},get hist(){return hist},get offset(){return off}}));
+})();
+
 // test hooks for automated screenshots
-window.__NG={get mode(){return mode},get R(){return R},get S(){return S},get me(){return me},deploy,setLook:(y,p)=>{yaw=y;pitch=p},prefs,drawHome,step:(n,i)=>{for(let k=0;k<n;k++){G.step(S,1/30,Object.assign({move:[0,0,0],aim:fwdOf(),fire:false,boost:false},i||{}));handleEvents(S,true)}}};
+window.__NG={net:NET,spec:SPEC,audio,get mode(){return mode},get R(){return R},get S(){return S},get me(){return me},deploy,setLook:(y,p)=>{yaw=y;pitch=p},prefs,drawHome,step:(n,i)=>{for(let k=0;k<n;k++){G.step(S,1/30,Object.assign({move:[0,0,0],aim:fwdOf(),fire:false,boost:false},i||{}));handleEvents(S,true)}}};
 })();
 </script>
-<script>// NULL GATE 1.3 · multiplayer step 1: Host / Join screen + 4-letter room codes.
+<script>// NULL GATE 1.3 · multiplayer. Step 1: Host / Join screen + 4-letter room codes. Step 2: network play (START, controls up, snapshots down).
 // Peer-to-peer over WebRTC through the free PeerJS broker. The host keeps the room roster and pings every player once a second.
 // Add ?net=local to the URL to run rooms between tabs of one browser (BroadcastChannel) with no network: used for testing.
+// With ?net=local, &lag=80 delays every message by about 80 ms each way, to try the smoothing.
 (function(){'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const G=window.NG3,NG=window.__NG;
 const PROTO=1,PREFIX='nullgate-mp1-',MAXH=6,SEATS=6,ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ',DROP_MS=6500;
-const QS=new URLSearchParams(location.search);const LOCAL=QS.get('net')==='local';
+const QS=new URLSearchParams(location.search);const LOCAL=QS.get('net')==='local';const LAG=Math.max(0,Math.min(500,+QS.get('lag')||0));
 const CDN=['https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js','https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js'];
 const MAPN={planets:'Planets',forts:'Arena',core:'Core Arena'};
 const now=()=>performance.now();
@@ -1172,7 +1488,8 @@ class LocalConn extends Em{constructor(p,remote,cid,md){super();this._p=p;this.p
 class LocalPeer extends Em{constructor(id){super();if(typeof id!=='string')id=null;this.id=id||('L'+Math.random().toString(36).slice(2,10));this._n=Math.random();this._conns=new Map();this.open=false;this.destroyed=false;
   this._bc=new BroadcastChannel('ng-localnet');this._bc.onmessage=e=>this._on(e.data);this._post({k:'claim',id:this.id});
   this._ct=setTimeout(()=>{if(!this.destroyed){this.open=true;this.emit('open',this.id)}},150)}
- _post(m){m.from=this.id;m.fn=this._n;try{this._bc.postMessage(m)}catch(e){}}
+ _post(m){m.from=this.id;m.fn=this._n;const bc=this._bc;if(!LAG){try{bc.postMessage(m)}catch(e){}return}
+  const t=Math.max(this._lt||0,now()+LAG*(.8+Math.random()*.4));this._lt=t;setTimeout(()=>{try{bc.postMessage(m)}catch(e){}},t-now())}
  _err(type,msg){const e=new Error(msg);e.type=type;this.emit('error',e)}
  _on(m){if(this.destroyed||!m)return;
   if(m.k==='claim'){if(m.id===this.id&&m.fn!==this._n&&this.open)this._post({k:'taken',tn:m.fn});return}
@@ -1212,6 +1529,9 @@ const netMsg=e=>{const t=e&&e.type;
 
 // ---------- state
 let role=null,peer=null,code='',players=new Map(),hostConn=null,welcomed=false,lastHost=0,timer=null,joinT=null,busy=false,lastRoster=null;
+let playing=false,match=null;// host: the running match ({cfg, seatOf: pid -> soldier id})
+const CLS=()=>G.CLASS_IDS.includes(NG.prefs.cls)?NG.prefs.cls:'shield';
+const CALL=id=>(G.CLASSES[id]||G.CLASSES.shield).call;
 
 // ---------- UI
 const toast=(msg)=>{const el=$('#mpToast');el.textContent=msg;el.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('on'),2200)};
@@ -1226,7 +1546,7 @@ function openMP(){if(NG&&NG.mode&&NG.mode!=='home')return;$('#home').classList.a
 function closeMP(){if(role&&!confirmLeave())return;teardown();$('#mp').classList.add('hidden');$('#home').classList.remove('hidden')}
 function confirmLeave(){return true}// leaving from Back always closes the room; it's one tap to make a new one
 function showStart(err){$('#mpLobby').classList.add('hidden');$('#mpStart').classList.remove('hidden');drawStart();setBusy(false);$('#mpErr').textContent=err||''}
-function showLobby(){$('#mpStart').classList.add('hidden');$('#mpLobby').classList.remove('hidden');$('#lbCode').textContent=code;
+function showLobby(){$('#mpStart').classList.add('hidden');$('#mpLobby').classList.remove('hidden');$('#lbCode').textContent=code;$('#lbStart').classList.toggle('hidden',role!=='host');
  $('#lbHint').textContent=role==='host'?'Friends open this page, tap Multiplayer → Join and enter the code. The share link fills it in for them.':'You\'re in. The host starts the match.';
  if(lastRoster)renderLobby(lastRoster)}
 const pingCls=p=>p==null?'':p<80?'g':p<160?'y':'r';
@@ -1239,18 +1559,22 @@ function renderLobby(r){lastRoster=r;const room=r.room||{};
    <div class="seg" id="lbMaps">${Object.keys(MAPN).map(m=>`<button data-map="${m}" class="${m===room.map?'on':''}" aria-pressed="${m===room.map}">${MAPN[m]}</button>`).join('')}</div>`)}
  else{$('#lbMatchHint').textContent='· the host picks';setHTML('#lbMatch',`<div class="lbLine">${esc(String(mName).toUpperCase())} · ${esc(String(map).toUpperCase())} · 3 V 3</div>`)}
  // players
- const ps=(r.players||[]).slice().sort((a,b)=>(b.host-a.host));
+ const ps=(r.players||[]).slice();
  $('#lbHostLine').textContent=room.hostMode==='spectate'?`Host: ${r.hostName||'host'} · spectating, takes no slot`:'';
- const rows=ps.map(p=>{const you=p.pid===PID;return`<div class="pl" data-pid="${esc(p.pid)}"><span class="pn">${esc(p.name)}${p.host?'<em class="h">HOST</em>':''}${you?'<em>YOU</em>':''}</span><span class="inTag">${inLabel(p.input)}</span>
+ const rows=ps.map(p=>{const you=p.pid===PID;return`<div class="pl" data-pid="${esc(p.pid)}"><span class="tmTag ${p.team==='red'?'red':'blue'}">${p.team==='red'?'RED':'BLUE'}</span><span class="pn">${esc(p.name)}${p.host?'<em class="h">HOST</em>':''}${you?'<em>YOU</em>':''}</span><span class="inTag">${esc(CALL(p.cls)).toUpperCase()}</span><span class="inTag">${inLabel(p.input)}</span>
   <span class="png"></span>${role==='host'&&!p.host?`<button class="kick" data-kick="${esc(p.pid)}" aria-label="Remove ${esc(p.name)}">✕</button>`:''}</div>`});
- for(let i=ps.length;i<SEATS;i++)rows.push('<div class="pl bot"><span class="pn">Bot</span><span class="inTag">AI</span><span class="png">fills slot</span></div>');
+ for(let i=ps.length;i<SEATS;i++)rows.push(`<div class="pl bot"><span class="tmTag ${i%2?'red':'blue'}">${i%2?'RED':'BLUE'}</span><span class="pn">Bot</span><span class="inTag">AI</span><span class="png">fills slot</span></div>`);
  setHTML('#lbList',rows.join(''));
  $$('#lbList .pl[data-pid]').forEach((el,i)=>{const p=ps[i],sp=el.querySelector('.png');sp.className='png '+(p.host?'g':pingCls(p.ping));sp.textContent=p.host?'host':p.ping==null?'…':p.ping+' ms'});
  $('#lbCount').textContent=`· ${ps.length} of ${SEATS} players${ps.length<SEATS?` · ${SEATS-ps.length} bot${SEATS-ps.length>1?'s':''}`:''}`;
  // status + start
  const st=$('#lbStart');st.classList.toggle('hidden',role!=='host');
- if(role==='host'){st.disabled=true;st.textContent='START ▸';$('#lbStatus').textContent='Rooms and joining work in this build. Starting a network match arrives in the next build (step 2).'}
- else{const me=ps.find(p=>p.pid===PID);$('#lbStatus').textContent=`Connected · waiting for the host${me&&me.ping!=null?` · your ping ${me.ping} ms`:''}`}}
+ if(role==='host'){st.disabled=playing;st.textContent='START ▸';
+  $('#lbStatus').textContent=hostMode!=='play'?(playing?'Match running.':'Host only: you watch on the spectator screen. Keep this tab in front while the match runs.'):
+   playing?'Match running.':`Teams alternate in join order and stay the same for rematches. Everyone plays the specialty picked on their own squad screen.`}
+ else{const me=ps.find(p=>p.pid===PID);$('#lbStatus').textContent=(r.playing?'Match in progress · you\'ll be in the next one':'Connected · waiting for the host to start')+(me&&me.ping!=null?` · your ping ${me.ping} ms`:'')}
+ // the ping readout in the match HUD
+ const np=$('#netPing');if(np){const me=ps.find(p=>p.pid===PID);np.textContent=role==='host'?'HOST':me&&me.ping!=null?me.ping+' ms':'… ms';np.className='clock png '+(role==='host'?'g':pingCls(me&&me.ping))+(NG.net.role?'':' hidden')}}
 
 // ---------- host
 const genCode=()=>Array.from({length:4},()=>ALPHA[Math.floor(Math.random()*ALPHA.length)]).join('');
@@ -1262,7 +1586,7 @@ async function hostRoom(){if(busy)return;saveName();setBusy(true,'Creating a roo
  if(!p){showStart(netMsg(last));return}
  if(!busy){try{p.destroy()}catch(e){}return}// cancelled
  peer=p;code=c;role='host';players=new Map();
- if(hostMode==='play')players.set(PID,{pid:PID,name:myName,input:INPUT,host:true});
+ if(hostMode==='play')players.set(PID,{pid:PID,name:myName,input:INPUT,cls:CLS(),host:true});playing=false;match=null;
  peer.on('connection',onConn);
  peer.on('disconnected',()=>{setTimeout(()=>{try{if(role==='host'&&peer&&!peer.destroyed)peer.reconnect()}catch(e){}},1000)});
  peer.on('error',e=>{if(e&&e.type==='peer-unavailable')return;console.warn('host peer error',e&&e.type)});
@@ -1277,19 +1601,31 @@ function hostData(conn,d){if(role!=='host'||!d||typeof d!=='object')return;
   const old=players.get(pid);
   if(!old&&players.size>=MAXH){reject(conn,'This room is full (6 players).');return}// the playing host counts as one of the 6
   if(old&&old.conn&&old.conn!==conn){old.conn._pid=null;try{old.conn.close()}catch(e){}}
-  conn._pid=pid;players.set(pid,{pid,name:cleanName(d.name)||'Pilot',input:d.input==='touch'?'touch':'kbm',conn,ping:old?old.ping:null,last:now()});
-  send(conn,{t:'welcome',pid,code});toast(`${cleanName(d.name)||'Pilot'} ${old?'rejoined':'joined'}`);broadcast();return}
+  conn._pid=pid;players.set(pid,{pid,name:cleanName(d.name)||'Pilot',input:d.input==='touch'?'touch':'kbm',cls:G.CLASS_IDS.includes(d.cls)?d.cls:'shield',conn,ping:old?old.ping:null,last:now()});
+  send(conn,{t:'welcome',pid,code});toast(`${cleanName(d.name)||'Pilot'} ${old?'rejoined':'joined'}`);broadcast();
+  if(playing&&match.seatOf.has(pid))send(conn,{t:'start',cfg:match.cfg,seat:match.seatOf.get(pid)});// back into your own soldier
+  return}
  const p=players.get(conn._pid);if(!p||p.conn!==conn)return;p.last=now();
- if(d.t==='pong'&&typeof d.at==='number'){const rtt=Math.max(0,now()-d.at);p.ping=p.ping==null?rtt:p.ping*.6+rtt*.4}
+ if(d.t==='i'){if(playing&&match.seatOf.has(p.pid))NG.net.input(match.seatOf.get(p.pid),d)}
+ else if(d.t==='pong'&&typeof d.at==='number'){const rtt=Math.max(0,now()-d.at);p.ping=p.ping==null?rtt:p.ping*.6+rtt*.4}
  else if(d.t==='bye'){removePlayer(p.pid,false);toast(`${p.name} left`)}}
 function dropConn(conn){if(role!=='host')return;const p=players.get(conn._pid);if(p&&p.conn===conn){removePlayer(p.pid,false);toast(`${p.name} disconnected`)}}
 function removePlayer(pid,closeIt){const p=players.get(pid);if(!p||p.host)return;players.delete(pid);if(p.conn){p.conn._pid=null;if(closeIt!==false)setTimeout(()=>{try{p.conn.close()}catch(e){}},300)}broadcast()}
 function hostTick(){const t=now();
  for(const p of[...players.values()]){if(p.host)continue;if(t-p.last>DROP_MS){removePlayer(p.pid,true);toast(`${p.name} timed out`);continue}send(p.conn,{t:'ping',at:t})}
  broadcast()}
-function rosterMsg(){const pr=NG.prefs;return{t:'roster',room:{code,hostMode,mode:pr.mode,map:pr.map},hostName:myName,
- players:[...players.values()].map(p=>({pid:p.pid,name:p.name,input:p.input,host:!!p.host,ping:p.host?0:p.ping==null?null:Math.round(p.ping)}))}}
-function broadcast(){if(role!=='host')return;const m=rosterMsg();for(const p of players.values())if(p.conn)send(p.conn,m);renderLobby(m)}
+// teams alternate in join order (host first): blue, red, blue, … Soldier ids: blue 0–2, red 3–5
+const teamMem=new Map();// pid -> team from the last match (Rematch keeps teams)
+function assign(){const ps=[...players.values()],cnt={blue:0,red:0},want=new Map();
+ for(const p of ps){const t=teamMem.get(p.pid);if(t&&cnt[t]<3){want.set(p.pid,t);cnt[t]++}}
+ ps.forEach((p,i)=>{if(want.has(p.pid))return;const t=cnt.blue<cnt.red?'blue':cnt.red<cnt.blue?'red':(i%2?'red':'blue');const tt=cnt[t]<3?t:(t==='blue'?'red':'blue');want.set(p.pid,tt);cnt[tt]++});
+ let nb=0,nr=0;return ps.map(p=>{const team=want.get(p.pid),idx=team==='blue'?nb++:nr++;return{p,team,idx,id:(team==='blue'?0:3)+idx}})}
+function rosterMsg(){const pr=NG.prefs,me=players.get(PID);if(me)me.cls=CLS();
+ const teamOf=new Map(assign().map(a=>[a.p.pid,a.team]));// preview = what START will do
+ if(playing)for(const h of match.cfg.humans)teamOf.set(h.pid,h.team);
+ return{t:'roster',room:{code,hostMode,mode:pr.mode,map:pr.map},hostName:myName,playing,
+ players:[...players.values()].map(p=>({pid:p.pid,name:p.name,input:p.input,cls:p.cls,team:teamOf.get(p.pid)||'blue',host:!!p.host,ping:p.host?0:p.ping==null?null:Math.round(p.ping)}))}}
+function broadcast(){if(role!=='host')return;const m=rosterMsg();for(const p of players.values())if(p.conn)send(p.conn,m);renderLobby(m);NG.net.setRoster(m)}
 
 // ---------- client
 async function joinRoom(){if(busy)return;saveName();const c=$('#mpCode').value.toUpperCase().replace(/[^A-Z]/g,'');$('#mpCode').value=c;
@@ -1303,31 +1639,52 @@ async function joinRoom(){if(busy)return;saveName();const c=$('#mpCode').value.t
  joinT=setTimeout(()=>{if(!welcomed)fail(`Couldn't reach room ${c}. If the code is right, this network may block direct connections: try Wi-Fi.`)},15000);
  peer.on('error',e=>{if(role!=='client')return;if(!welcomed)fail(e&&e.type==='peer-unavailable'?`No room ${c}. Check the code with the host.`:netMsg(e))});
  peer.on('disconnected',()=>{/* the broker link isn't needed once connected to the host */});
- conn.on('open',()=>send(conn,{t:'hello',v:PROTO,pid:PID,name:myName,input:INPUT}));
+ conn.on('open',()=>send(conn,{t:'hello',v:PROTO,pid:PID,name:myName,input:INPUT,cls:CLS()}));
  conn.on('data',clientData);
  conn.on('close',()=>{if(role==='client'&&hostConn===conn)fail(welcomed?'Connection to the host closed.':`Couldn't join room ${c}.`)});
  conn.on('error',()=>{});
  timer=setInterval(()=>{if(role==='client'&&welcomed&&now()-lastHost>DROP_MS)fail('Lost connection to the host.')},1000)}
 function clientData(d){if(role!=='client'||!d||typeof d!=='object')return;lastHost=now();
  if(d.t==='welcome'){welcomed=true;clearTimeout(joinT);setBusy(false);showLobby();toast(`Joined room ${code}`)}
- else if(d.t==='roster'){if(welcomed)renderLobby(d)}
+ else if(d.t==='roster'){if(welcomed){renderLobby(d);NG.net.setRoster(d)}}
+ else if(d.t==='s')NG.net.snap(d);
+ else if(d.t==='start'){if(!welcomed)return;NG.net.start({role:'client',cfg:d.cfg,seat:d.seat,assist:INPUT==='touch',send:m=>send(hostConn,m),onExit:()=>showMPLobby('')})}
+ else if(d.t==='abort'){if(NG.net.role){NG.net.drop();showMPLobby('The host ended the match.')}}
+ else if(d.t==='lobby'){if(NG.net.role&&NG.mode==='end'){NG.net.exit('follow');toast('The host went back to the lobby')}}
  else if(d.t==='ping')send(hostConn,{t:'pong',at:d.at});
  else if(d.t==='reject')fail(d.why||'The host turned down the join.');
  else if(d.t==='kicked')fail('The host removed you from the room.');
  else if(d.t==='closed')fail('The host closed the room.')}
 
 // ---------- leave / tear down
-function teardown(){clearInterval(timer);clearTimeout(joinT);timer=null;const p=peer,r=role;
+function teardown(){clearInterval(timer);clearTimeout(joinT);timer=null;const p=peer,r=role;const wasIn=!!(NG.net&&NG.net.role);if(wasIn)NG.net.drop();playing=false;match=null;
  if(r==='host'){for(const pl of players.values())if(pl.conn)send(pl.conn,{t:'closed'})}
  else if(r==='client'&&hostConn)send(hostConn,{t:'bye'});
  role=null;peer=null;hostConn=null;players=new Map();welcomed=false;lastRoster=null;
  if(p)setTimeout(()=>{try{p.destroy()}catch(e){}},r?250:0)}
-function fail(msg){teardown();if(!$('#mp').classList.contains('hidden'))showStart(msg);else toast(msg)}
+function fail(msg){const wasIn=!!(NG.net&&NG.net.role);teardown();if(wasIn){showMP();showStart(msg)}else if(!$('#mp').classList.contains('hidden'))showStart(msg);else toast(msg)}
+// back to the multiplayer screens after a match
+function showMP(){$('#home').classList.add('hidden');$('#mp').classList.remove('hidden')}
+function showMPLobby(msg){showMP();if(role){showLobby();if(msg)toast(msg);if(lastRoster)renderLobby(lastRoster)}else showStart(msg)}
+// ---------- start a match (host)
+function startMatch(){if(role!=='host')return;NG.audio&&NG.audio();const pr=NG.prefs;const me=players.get(PID);if(me)me.cls=CLS();
+ const as=assign(),blue=[null,null,null],red=[null,null,null];
+ for(const a of as)(a.team==='blue'?blue:red)[a.idx]=a.p.cls;
+ for(const T of[blue,red]){const free=G.CLASS_IDS.filter(c=>!T.includes(c));let k=0;for(let i=0;i<3;i++)if(!T[i])T[i]=free.length?free[k++%free.length]:G.CLASS_IDS[i]}
+ const cfg={mode:pr.mode,map:pr.map,diff:pr.diff,seed:1+Math.floor(Math.random()*99999),blue,red,
+  humans:as.map(a=>({id:a.id,team:a.team,idx:a.idx,pid:a.p.pid,name:a.p.name,input:a.p.input}))};
+ match={cfg,seatOf:new Map(as.map(a=>[a.p.pid,a.id]))};playing=true;for(const a of as)teamMem.set(a.p.pid,a.team);
+ for(const a of as)if(!a.p.host)send(a.p.conn,{t:'start',cfg,seat:a.id});
+ NG.net.start({role:'host',cfg,seat:match.seatOf.has(PID)?match.seatOf.get(PID):null,assist:INPUT==='touch',sendTo:(pid,m)=>{const p=players.get(pid);if(p&&p.conn)send(p.conn,m)},
+  onAgain:()=>{startMatch()},
+  onExit:reason=>{const msg={t:reason==='quit'?'abort':'lobby'};for(const p of players.values())if(p.conn)send(p.conn,msg);
+   playing=false;match=null;showMPLobby('');broadcast()}});
+ broadcast()}
 function saveName(){myName=cleanName($('#mpName').value)||myName;$('#mpName').value=myName;sset(localStorage,'ng-mp-name',myName)}
 
 // ---------- wiring
 $('#mpBtn').onclick=openMP;$('#mpBack').onclick=closeMP;
-$('#mpHost').onclick=hostRoom;$('#mpJoin').onclick=joinRoom;
+$('#mpHost').onclick=()=>{NG.audio&&NG.audio();hostRoom()};$('#mpJoin').onclick=()=>{NG.audio&&NG.audio();joinRoom()};$('#lbStart').onclick=startMatch;
 $('#mpName').addEventListener('change',saveName);
 $('#mpCode').addEventListener('input',e=>{const v=e.target.value.toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);if(v!==e.target.value)e.target.value=v;$('#mpErr').textContent=''});
 $('#mpCode').addEventListener('keydown',e=>{if(e.key==='Enter')joinRoom()});
@@ -1349,7 +1706,7 @@ addEventListener('pagehide',()=>{if(role)teardown()});
 const qRoom=(QS.get('room')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
 if(qRoom.length===4){$('#mpCode').value=qRoom;openMP();$('#mpJoinNote').textContent=`Room ${qRoom} from your link: check your name, then tap JOIN.`}
 // test hooks
-window.__NGMP={get role(){return role},get code(){return code},get roster(){return lastRoster},get players(){return players},PID,host:hostRoom,join:joinRoom,leave:()=>{teardown();showStart('')}};
+window.__NGMP={start:startMatch,get playing(){return playing},get role(){return role},get code(){return code},get roster(){return lastRoster},get players(){return players},PID,host:hostRoom,join:joinRoom,leave:()=>{teardown();showStart('')}};
 })();
 </script>
 </body></html>
