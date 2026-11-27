@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#05070c">
-<title>NULL GATE · 1.3 MP-4</title>
+<title>NULL GATE · 1.3 MP-4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 /* VOICE: a squad briefing on a carrier deck: terse callouts, numbers you trust.
@@ -130,6 +130,17 @@ header{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tg{display:flex;align-items:center;gap:10px;min-height:40px;font-size:13px;color:#c8d3ea}.tg input{width:20px;height:20px;accent-color:#ffd36a;flex:none}
 .tgs{display:grid;grid-template-columns:1fr 1fr;column-gap:8px}
 .heNote{font-size:12px;color:var(--dim);margin:6px 0}
+/* controls / key bindings (1.2.5) */
+#binds>div{width:min(560px,100%)}
+.bt{display:grid;grid-template-columns:minmax(0,1fr) 9.5em 9.5em;gap:6px;align-items:center}
+.bt .bh{font:700 10px var(--hud);letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.bt .an{font-size:14px;color:#c8d3ea}
+.bt .ks{min-height:40px;padding:0 6px;font:700 12.5px var(--hud);letter-spacing:.04em;background:#05070c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt .ks.none{color:#5a6684;font-weight:500}
+.bt .ks.wait{border-color:var(--gold);color:var(--gold);animation:bwait 1s infinite}
+@keyframes bwait{50%{background:#ffd36a22}}
+#bdMsg{min-height:20px;font-size:13px;color:var(--gold);margin:8px 0 0}
+@media (prefers-reduced-motion:reduce){.bt .ks.wait{animation:none}}
 @media (orientation:portrait){#hudEd{top:auto;left:0;width:auto;height:52vh;border-left:0;border-top:1px solid var(--line);border-radius:16px 16px 0 0;padding-left:max(14px,env(safe-area-inset-left))}}
 #stickBase{position:absolute;width:120px;height:120px;margin:-60px 0 0 -60px;border-radius:50%;border:2px solid #ffffff30;background:#ffffff08;pointer-events:none;opacity:.0;transition:opacity .15s}
 #stickKnob{position:absolute;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:#e8eefc40;border:2px solid #e8eefc80;pointer-events:none;opacity:0}
@@ -239,9 +250,9 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 
 <!-- HOME / TEAM SELECTION -->
 <div id="home" class="screen"><div class="homeIn">
- <header><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-4</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div>
+ <header><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-4.1</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div>
   <div class="modes" id="modes" role="group" aria-label="Game mode"><button data-m="eclipse">ECLIPSE</button><button data-m="twin">TWIN ORBIT</button><button data-m="ring">RING RUN</button></div>
-  <button class="hb mpBtn" id="mpBtn">Multiplayer</button><button class="hb" id="rulesBtn">How to play</button><button class="hb" id="mapBtn">Map</button><button class="hb" id="hudBtn">HUD</button><button class="hb" id="sndBtn" aria-pressed="true">Sound on</button></header>
+  <button class="hb mpBtn" id="mpBtn">Multiplayer</button><button class="hb" id="rulesBtn">How to play</button><button class="hb" id="mapBtn">Map</button><button class="hb" id="hudBtn">HUD</button><button class="hb" id="bindBtn">Controls</button><button class="hb" id="sndBtn" aria-pressed="true">Sound on</button></header>
  <div class="grid">
   <section class="sec a-team"><h2><b>1</b>Team</h2><div class="teams">
    <button class="tm blue" data-team="blue">BLUE<small class="spw">Spawns at the blue gate</small></button>
@@ -365,10 +376,19 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 
 <!-- PAUSE -->
 <div id="pause" class="modal hidden"><div style="text-align:center;width:min(360px,100%)"><h3>PAUSED</h3>
- <div class="mrow" style="flex-direction:column"><button class="pri" id="resume">Resume</button><button id="pRules">How to play</button><button id="pHud">Customize HUD</button><button id="pSnd">Sound on</button><button id="quit">Quit to squad select</button></div></div></div>
+ <div class="mrow" style="flex-direction:column"><button class="pri" id="resume">Resume</button><button id="pRules">How to play</button><button id="pHud">Customize HUD</button><button id="pBind">Controls</button><button id="pSnd">Sound on</button><button id="quit">Quit to squad select</button></div></div></div>
+
+<!-- CONTROLS (1.2.5) -->
+<div id="binds" class="modal hidden" role="dialog" aria-label="Controls"><div><h3>CONTROLS · KEYBOARD AND MOUSE</h3>
+ <p>Click a slot, then press a key, a mouse button or scroll the wheel. <b>Esc</b> cancels, <b>Backspace</b> or <b>Delete</b> clears the slot. Esc always pauses and Tab always shows the player board. Bindings work in solo and multiplayer.</p>
+ <div class="bt" id="bdTbl"></div><p id="bdMsg" aria-live="polite"></p>
+ <h4>MOUSE</h4>
+ <label class="rng">Look speed<input type="range" min="25" max="300" step="5" id="bdSens"><output id="bdSensO"></output></label>
+ <label class="tg"><input type="checkbox" id="bdInv">Invert look up / down</label>
+ <div class="mrow"><button class="pri" id="bdDone">Done</button><button id="bdReset">Reset to defaults</button></div></div></div>
 
 <!-- RULES -->
-<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-4</h3>
+<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-4.1</h3>
  <h4>Win</h4><ul><li>3 vs 3. Pick a map on the home screen: <b>Planets</b>, <b>Arena</b> (the forts) or <b>Core Arena</b>; every mode plays on all three. Your team scores 1 point a second while only your team is inside a live hill. If both teams are inside, nobody scores there.</li><li>First to <b>150</b> wins. At <b>6:00</b> the higher score wins.</li></ul>
  <h4>Every mode</h4><ul><li>Hills circle a body, one lap every 37 s, then move to the next: on Planets, A rock → B gas → C ice; on Arena, the core inside each fort; on Core Arena, the core (A), then beacons B and C. Gold dots trace the live orbit; the gold ring on your screen points to the live hill.</li><li>The live hill has gravity: inside, it carries you along and pulls you to its middle, so you can stop steering and fight. Steer to move or leave.</li><li>When the hill moves on, anyone still inside is slung out along its path.</li><li>Each live hill has a moon and asteroids circling it. Planets, moons and asteroids are solid: they block shots and movement.</li><li>Each team spawns on its home planet (Planets) or its home wall (Arena, Core Arena).</li><li><b>Planets pull on shots.</b> A bolt flying past a planet curves toward it: more the closer it passes and the longer it flies, so Power's 80 m shots bend most. Gas giant B pulls hardest, then rock A, then ice C; moons pull a little. The arena cores and beacons are small but dense, pulling about as hard as rock A. When a planet will bend your shot, a dotted aim arc shows where it goes (red end = it hits the planet). Aim assist and bots allow for the bend too.</li></ul>
  <h4>Eclipse</h4><ul><li>A star lights one side of each planet. For about 14 s of every lap the hill passes through the planet's shadow.</li><li>In shadow the hill scores <b>2 points a second</b>. The orbit dots dim there.</li><li>Enemies in shadow are hidden beyond 15 m, unless they fired in the last second. Bots play by the same rule.</li></ul>
@@ -377,7 +397,7 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
  <h4>Getting hit</h4><ul><li>Each hit takes 1 shield cell. A hit with no cells left freezes you.</li><li>Frozen soldiers respawn after 4 s, fully shielded, at the safest spawn on their home planet or wall.</li><li>Cells come back one at a time once you go 3 s without being hit.</li></ul>
  <h4>Specialties</h4><ul><li><b>Shield · Bulwark</b>: 3 shield cells. Slowest, shortest range (34 m).</li><li><b>Speed · Comet</b>: fastest, with a dash. 1 cell, 40 m range.</li><li><b>Power · Lancer</b>: 80 m range, and every hit knocks off a whole shield. Slow to fire, 1 cell.</li></ul>
  <div class="tri"><span>Power beats Shield</span><span>Speed beats Power</span><span>Shield beats Speed</span></div>
- <h4>Controls</h4><ul><li>Left thumb: drag anywhere on the left side to fly where you look.</li><li>Right thumb: drag to look. Hold FIRE to shoot. ▲ / ▼ thrust up and down. DASH (Speed only) bursts forward.</li><li>Keyboard: W A S D move forward, back and sideways on the level plane (looking up or down doesn't tilt it). E moves up, C moves down. Mouse to look (click to lock the pointer), click to fire, Shift to dash, Esc to pause.</li><li><b>HUD:</b> tap HUD on the home screen, or Customize HUD in the pause menu, to change the crosshair, HUD size and opacity, what the HUD shows, and the touch buttons (size, opacity, left-handed, and drag to move). Settings are saved on this device.</li></ul>
+ <h4>Controls</h4><ul><li>Left thumb: drag anywhere on the left side to fly where you look.</li><li>Right thumb: drag to look. Hold FIRE to shoot. ▲ / ▼ thrust up and down. DASH (Speed only) bursts forward.</li><li>Keyboard (default): W A S D move forward, back and sideways on the level plane (looking up or down doesn't tilt it). E moves up, C moves down. Mouse to look (click to lock the pointer), click or F to fire, Shift to dash, Esc to pause.</li><li><b>Controls:</b> tap Controls on the home screen or in the pause menu to change any movement, fire or dash binding (keys, mouse buttons or the wheel, two per action), the look speed and invert look. Settings are saved on this device.</li><li><b>HUD:</b> tap HUD on the home screen, or Customize HUD in the pause menu, to change the crosshair, HUD size and opacity, what the HUD shows, and the touch buttons (size, opacity, left-handed, and drag to move). Settings are saved on this device.</li></ul>
  <div class="mrow"><button class="pri" id="closeRules">Got it</button></div></div></div>
 
 <!-- MAP / WORLD BUILDER IMPORT -->
@@ -969,6 +989,21 @@ const HUD_PRE={default:{},clean:{xs:'dot',hs:90,ho:80,feed:false,mates:false,dis
 const XCOL=['#e8eefc','#6dff8a','#5ff3ff','#ffd36a','#ff6bd6','#ff5a4a'];
 let hudP=Object.assign({},HUD_DEF,store.get('ng3-hud')||{});hudP.pos=Object.assign({},hudP.pos||{});
 const saveHud=()=>store.set('ng3-hud',hudP);
+// ---------- key bindings (1.2.5): two slots per action; KeyboardEvent.code (layout-independent), Mouse0–4, WheelUp/WheelDown
+const ACTIONS=[['fwd','Move forward'],['back','Move back'],['left','Move left'],['right','Move right'],['up','Move up'],['down','Move down'],['dash','Dash (Speed)'],['fire','Fire']];
+const BIND_DEF={fwd:['KeyW','ArrowUp'],back:['KeyS','ArrowDown'],left:['KeyA','ArrowLeft'],right:['KeyD','ArrowRight'],up:['KeyE',null],down:['KeyC',null],dash:['ShiftLeft','ShiftRight'],fire:['Mouse0','KeyF']};
+const CTRL_DEF={sens:100,inv:false};
+const loadBinds=()=>{const b=store.get('ng3-binds')||{},o={};for(const[a]of ACTIONS){const v=b[a];o[a]=Array.isArray(v)?[v[0]||null,v[1]||null]:BIND_DEF[a].slice()}return o};
+let binds=loadBinds(),ctrlP=Object.assign({},CTRL_DEF,store.get('ng3-ctrl')||{});
+const saveBinds=()=>store.set('ng3-binds',binds),saveCtrl=()=>store.set('ng3-ctrl',ctrlP);
+let kbMap=null;try{navigator.keyboard&&navigator.keyboard.getLayoutMap&&navigator.keyboard.getLayoutMap().then(m=>{kbMap=m;if(!$('#binds').classList.contains('hidden'))drawBinds()}).catch(()=>{})}catch(e){}
+const KEYNAME={Space:'Space',Enter:'Enter',Tab:'Tab',Backquote:'`',Minus:'-',Equal:'=',BracketLeft:'[',BracketRight:']',Backslash:'\\',Semicolon:';',Quote:"'",Comma:',',Period:'.',Slash:'/',
+ ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→',ShiftLeft:'L Shift',ShiftRight:'R Shift',ControlLeft:'L Ctrl',ControlRight:'R Ctrl',AltLeft:'L Alt',AltRight:'R Alt',MetaLeft:'L Cmd',MetaRight:'R Cmd',CapsLock:'Caps Lock',
+ Mouse0:'Left click',Mouse1:'Middle click',Mouse2:'Right click',Mouse3:'Mouse 4',Mouse4:'Mouse 5',WheelUp:'Wheel up',WheelDown:'Wheel down'};
+function keyName(c){if(!c)return'—';if(KEYNAME[c])return KEYNAME[c];if(kbMap&&/^(Key|Digit)/.test(c)&&kbMap.get(c))return kbMap.get(c).toUpperCase();
+ if(/^Key[A-Z]$/.test(c))return c.slice(3);if(/^Digit\d$/.test(c))return c.slice(5);if(/^Numpad/.test(c))return'Num '+c.slice(6);return c.replace(/(Left|Right)$/,' $1')}
+const actName=a=>ACTIONS.find(x=>x[0]===a)[1];
+const isBound=c=>ACTIONS.some(([a])=>binds[a].includes(c));
 // 1.2.1: every mode plays on the World Builder Planets map (seed 1), in its own version
 const LAYOUTS={};const curLayout=()=>{const k=prefs.mode+'|'+prefs.map;return LAYOUTS[k]||(LAYOUTS[k]=G.makeOrbitLayout(1,prefs.mode,prefs.map))};
 const MAPTXT={planets:{eclipse:'Planets · a star lights one side; the hill scores double in shadow',twin:'Planets · two hills circle each planet in opposite directions',ring:'Planets · planet B has a debris ring the hill flies through'},
@@ -1030,7 +1065,7 @@ const SFX={shot:p=>p?(tone(420,90,.22,'sawtooth',.07),noise(.12,.06,600)):tone(9
 // ---------- state
 let mode='home',S=null,demo=null,me=null,acc=0,last=performance.now(),t0=0;
 const fx={parts:[],flash:{}};let kick=0,bob=0,fovKick=0;
-const inp={stick:null,look:null,fire:null,up:null,dn:null,boost:false,keys:new Set(),locked:false};
+const inp={stick:null,look:null,fire:null,up:null,dn:null,boost:false,keys:new Set(),codes:new Set(),wheel:{},locked:false};
 let yaw=0,pitch=0;
 function resetDemo(){const r=()=>G.CLASS_IDS[Math.floor(Math.random()*3)];demo=G.create({mode:prefs.mode,layout:curLayout(),seed:1+Math.floor(Math.random()*9999),blue:[r(),r(),r()],red:[r(),r(),r()],diff:'hard'})}
 const names=S=>{const out={};for(const team of['blue','red']){const L=S.soldiers.filter(s=>s.team===team),cnt={};for(const s of L)cnt[s.cls.id]=(cnt[s.cls.id]||0)+1;const seen={};
@@ -1092,6 +1127,33 @@ function edDown(e){const el=e.target.closest('.cb,.stickHint');if(!el)return;e.p
 function edMove(e){if(!edDrag||e.pointerId!==edDrag.id)return;let x=e.clientX-edDrag.dx,y=e.clientY-edDrag.dy;if(hudP.lefty)x=W-x;hudP.pos[edDrag.el.id]={x:x/W,y:y/H};layoutCtl()}
 function edUp(e){if(!edDrag||e.pointerId!==edDrag.id)return;edDrag.el.classList.remove('drag');edDrag=null;saveHud()}
 $('#hudBtn').onclick=openHud;$('#pHud').onclick=openHud;$('#heDone').onclick=closeHud;
+// ---------- controls screen (1.2.5)
+let capturing=null,bdFrom=null;
+function drawBinds(){$('#bdTbl').innerHTML='<span class="bh">Action</span><span class="bh">Primary</span><span class="bh">Secondary</span>'+ACTIONS.map(([a,n])=>`<span class="an">${n}</span>`+[0,1].map(i=>{const c=binds[a][i],w=capturing&&capturing.a===a&&capturing.i===i;
+  return`<button class="ks ${w?'wait':c?'':'none'}" data-a="${a}" data-i="${i}" aria-label="${n}, ${i?'secondary':'primary'}: ${c?keyName(c):'not set'}. Click to change.">${w?'Press…':keyName(c)}</button>`}).join('')).join('');
+ $('#bdSens').value=ctrlP.sens;$('#bdSensO').textContent=ctrlP.sens+'%';$('#bdInv').checked=!!ctrlP.inv}
+function setBind(c){const{a,i}=capturing;capturing=null;let msg='';
+ if(c){for(const[b]of ACTIONS)for(let j=0;j<2;j++)if(binds[b][j]===c&&!(b===a&&j===i)){binds[b][j]=null;if(b!==a)msg=`${keyName(c)} was taken off ${actName(b)}.`}
+  binds[a][i]=c;if(!binds[a][0]&&binds[a][1]){binds[a][0]=binds[a][1];binds[a][1]=null}}
+ else if(c===null){binds[a][i]=null;if(!binds[a][0]&&binds[a][1]){binds[a][0]=binds[a][1];binds[a][1]=null}}
+ if(!binds[a][0]&&!binds[a][1])msg=(msg?msg+' ':'')+`${actName(a)} has no binding now.`;
+ for(const[b]of ACTIONS)if(!binds[b][0]&&binds[b][1]){binds[b][0]=binds[b][1];binds[b][1]=null}
+ saveBinds();drawBinds();$('#bdMsg').textContent=msg}
+function capKey(e){if(!capturing)return;e.preventDefault();e.stopImmediatePropagation();if(e.key==='Escape'){capturing=null;drawBinds();$('#bdMsg').textContent='';return}
+ if(e.code==='Backspace'||e.code==='Delete'){setBind(null);return}if(e.code==='Tab'){$('#bdMsg').textContent='Tab is kept for the player board. Pick another key.';return}if(e.code)setBind(e.code)}
+let swallow={t:'',until:0};// the click, auxclick or context menu that follows a captured mouse button is eaten so it doesn't also press a button on the screen
+function capMouse(e){if(!capturing)return;e.preventDefault();e.stopPropagation();swallow={t:e.button?'aux':'click',until:performance.now()+800};setBind('Mouse'+e.button)}
+function capWheel(e){if(!capturing||!e.deltaY)return;e.preventDefault();setBind(e.deltaY<0?'WheelUp':'WheelDown')}
+addEventListener('keydown',capKey,true);addEventListener('mousedown',capMouse,true);addEventListener('wheel',capWheel,{capture:true,passive:false});
+for(const t of['click','auxclick','contextmenu'])addEventListener(t,e=>{if(performance.now()<swallow.until&&(t==='click')===(swallow.t==='click')){if(t!=='contextmenu')swallow.until=0;e.preventDefault();e.stopPropagation()}},true);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!capturing&&!$('#binds').classList.contains('hidden')){e.preventDefault();closeBinds()}});
+$('#bdTbl').addEventListener('click',e=>{const b=e.target.closest('.ks');if(!b||capturing)return;capturing={a:b.dataset.a,i:+b.dataset.i};$('#bdMsg').textContent='';drawBinds()});
+$('#bdSens').addEventListener('input',e=>{ctrlP.sens=+e.target.value;$('#bdSensO').textContent=ctrlP.sens+'%';saveCtrl()});
+$('#bdInv').addEventListener('change',e=>{ctrlP.inv=e.target.checked;saveCtrl()});
+$('#bdReset').onclick=()=>{binds=loadBinds();for(const[a]of ACTIONS)binds[a]=BIND_DEF[a].slice();ctrlP=Object.assign({},CTRL_DEF);saveBinds();saveCtrl();capturing=null;drawBinds();$('#bdMsg').textContent='Controls reset to defaults.'};
+function openBinds(){bdFrom=mode;capturing=null;releaseAll();if(mode==='paused')$('#pause').classList.add('hidden');$('#bdMsg').textContent='';drawBinds();$('#binds').classList.remove('hidden')}
+function closeBinds(){capturing=null;$('#binds').classList.add('hidden');if(bdFrom==='paused')$('#pause').classList.remove('hidden')}
+$('#bindBtn').onclick=openBinds;$('#pBind').onclick=openBinds;$('#bdDone').onclick=closeBinds;
 applyHud();$('#resume').onclick=()=>{$('#pause').classList.add('hidden');mode='match';last=performance.now()};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
 function showScreens(){$('#home').classList.toggle('hidden',mode!=='home');$('#hud').classList.toggle('hidden',!(mode==='match'||mode==='paused'||mode==='end'));
@@ -1102,24 +1164,33 @@ const ctl=$('#ctl');
 function btnOf(el){return el&&el.closest&&el.closest('.cb')}
 ctl.addEventListener('pointerdown',e=>{if(hudEditing){edDown(e);return}if(mode!=='match')return;e.preventDefault();audio();const b=btnOf(e.target);
  if(b){b.classList.add('on');if(b.id==='fireBtn')inp.fire=e.pointerId;if(b.id==='upBtn')inp.up=e.pointerId;if(b.id==='dnBtn')inp.dn=e.pointerId;if(b.id==='boostBtn')inp.boost=true;try{b.setPointerCapture(e.pointerId)}catch(x){}return}
- if(e.pointerType==='mouse'){if(!inp.locked&&ctl.requestPointerLock){try{ctl.requestPointerLock()}catch(x){}}if(inp.locked){inp.fire=e.pointerId;return}}
+ if(e.pointerType==='mouse'){if(!inp.locked&&ctl.requestPointerLock){try{ctl.requestPointerLock()}catch(x){}}if(inp.locked){syncMouse(e);return}}
  if((hudP.lefty?e.clientX>W*.58:e.clientX<W*.42)&&!inp.stick){inp.stick={id:e.pointerId,ox:e.clientX,oy:e.clientY,x:0,y:0};$('#stickBase').style.cssText=`left:${e.clientX}px;top:${e.clientY}px;opacity:1`;$('#stickHint').style.opacity=0}
  else if(!inp.look)inp.look={id:e.pointerId,x:e.clientX,y:e.clientY};
  try{ctl.setPointerCapture(e.pointerId)}catch(x){}});
-ctl.addEventListener('pointermove',e=>{if(hudEditing){edMove(e);return}if(mode!=='match')return;
+ctl.addEventListener('pointermove',e=>{if(hudEditing){edMove(e);return}if(mode!=='match')return;if(e.pointerType==='mouse'&&inp.locked)syncMouse(e);
  if(inp.stick&&e.pointerId===inp.stick.id){let dx=e.clientX-inp.stick.ox,dy=e.clientY-inp.stick.oy;const l=Math.hypot(dx,dy),mx=50;if(l>mx){dx*=mx/l;dy*=mx/l}inp.stick.x=dx/mx;inp.stick.y=dy/mx;$('#stickKnob').style.cssText=`left:${inp.stick.ox+dx}px;top:${inp.stick.oy+dy}px;opacity:1`}
  else if(inp.look&&e.pointerId===inp.look.id){look(e.clientX-inp.look.x,e.clientY-inp.look.y,.0052);inp.look.x=e.clientX;inp.look.y=e.clientY}
- else if(inp.locked&&e.pointerType==='mouse')look(e.movementX,e.movementY,.0026)});
-function up(e){if(hudEditing){edUp(e);return}const id=e.pointerId;$$('.cb').forEach(b=>{if((b.id==='fireBtn'&&inp.fire===id)||(b.id==='upBtn'&&inp.up===id)||(b.id==='dnBtn'&&inp.dn===id)||b.id==='boostBtn')b.classList.remove('on')});
+ });
+function up(e){if(hudEditing){edUp(e);return}if(e.pointerType==='mouse')syncMouse(e);const id=e.pointerId;$$('.cb').forEach(b=>{if((b.id==='fireBtn'&&inp.fire===id)||(b.id==='upBtn'&&inp.up===id)||(b.id==='dnBtn'&&inp.dn===id)||b.id==='boostBtn')b.classList.remove('on')});
  if(inp.fire===id)inp.fire=null;if(inp.up===id)inp.up=null;if(inp.dn===id)inp.dn=null;
  if(inp.stick&&inp.stick.id===id){inp.stick=null;$('#stickBase').style.opacity=0;$('#stickKnob').style.opacity=0}if(inp.look&&inp.look.id===id)inp.look=null}
 ctl.addEventListener('pointerup',up);ctl.addEventListener('pointercancel',up);ctl.addEventListener('lostpointercapture',up);addEventListener('pointerup',up,true);addEventListener('pointercancel',up,true);const touchSync=e=>{if(!e.touches||e.touches.length===0){releaseAll();return}const live=new Set([...e.touches].map(t=>t.identifier));if(inp.stick&&inp.stick.tid!=null&&!live.has(inp.stick.tid)){inp.stick=null;$('#stickBase').style.opacity=0;$('#stickKnob').style.opacity=0}if(inp.look&&inp.look.tid!=null&&!live.has(inp.look.tid))inp.look=null};addEventListener('touchend',touchSync,true);addEventListener('touchcancel',touchSync,true);addEventListener('touchstart',e=>{if(mode!=='match')return;const t=e.changedTouches[0];if(!t)return;setTimeout(()=>{if(inp.stick&&inp.stick.tid==null&&Math.abs(inp.stick.ox-t.clientX)<2&&Math.abs(inp.stick.oy-t.clientY)<2)inp.stick.tid=t.identifier;if(inp.look&&inp.look.tid==null&&Math.abs(inp.look.x-t.clientX)<2&&Math.abs(inp.look.y-t.clientY)<2)inp.look.tid=t.identifier},0)},true);addEventListener('blur',()=>{if(mode==='match')releaseAll()});addEventListener('orientationchange',()=>{if(mode==='match')releaseAll()});ctl.addEventListener('contextmenu',e=>e.preventDefault());
 document.addEventListener('pointerlockchange',()=>{inp.locked=document.pointerLockElement===ctl});
-document.addEventListener('mousemove',e=>{if(inp.locked&&mode==='match')look(e.movementX,e.movementY,.0026)});
-function releaseAll(){inp.stick=inp.look=inp.fire=inp.up=inp.dn=null;inp.keys.clear();$$('.cb').forEach(b=>b.classList.remove('on'));$('#stickBase').style.opacity=0;$('#stickKnob').style.opacity=0}
-function look(dx,dy,k){yaw+=dx*k;pitch=Math.max(-1.48,Math.min(1.48,pitch-dy*k))}
-addEventListener('keydown',e=>{if(e.target.tagName==='TEXTAREA')return;const k=e.key.toLowerCase();if(k==='escape'){mode==='match'?pause():null;return}if(mode!=='match')return;inp.keys.add(k);if(k==='shift')inp.boost=true;if([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(k))e.preventDefault()});
-addEventListener('keyup',e=>inp.keys.delete(e.key.toLowerCase()));
+document.addEventListener('mousemove',e=>{if(inp.locked&&mode==='match')look(e.movementX,e.movementY,.0052*ctrlP.sens/100,true)});
+// bound mouse buttons and wheel (pointer locked, in a match); mousedown fires for every button, even while another is held
+const press=c=>{if(!inp.codes.has(c)&&binds.dash.includes(c))inp.boost=true;inp.codes.add(c)};
+// pointer events carry every held button in e.buttons (the touch layer's preventDefault stops mousedown/mouseup, so those are not used)
+const MBIT=[1,4,2,8,16];function syncMouse(e){const on=inp.locked&&mode==='match'&&!capturing;for(let b=0;b<5;b++){const c='Mouse'+b;if(on&&(e.buttons&MBIT[b]))press(c);else inp.codes.delete(c)}}
+document.addEventListener('auxclick',e=>{if(mode==='match'||capturing)e.preventDefault()});
+document.addEventListener('contextmenu',e=>{if(mode==='match'||capturing)e.preventDefault()});
+// the wheel has no release, so a wheel binding counts as held for 0.15 s per notch
+addEventListener('wheel',e=>{if(capturing||!inp.locked||mode!=='match'||!e.deltaY)return;const c=e.deltaY<0?'WheelUp':'WheelDown';press(c);inp.wheel[c]=performance.now()+150},{passive:true});
+const held=a=>binds[a].some(c=>c&&inp.codes.has(c));
+function releaseAll(){inp.stick=inp.look=inp.fire=inp.up=inp.dn=null;inp.keys.clear();inp.codes.clear();inp.wheel={};$$('.cb').forEach(b=>b.classList.remove('on'));$('#stickBase').style.opacity=0;$('#stickKnob').style.opacity=0}
+function look(dx,dy,k,mouse){if(mouse&&ctrlP.inv)dy=-dy;yaw+=dx*k;pitch=Math.max(-1.48,Math.min(1.48,pitch-dy*k))}
+addEventListener('keydown',e=>{if(capturing)return;if(e.target.tagName==='TEXTAREA')return;if(e.key==='Escape'){mode==='match'?pause():null;return}if(mode!=='match')return;press(e.code);if(isBound(e.code)||e.code==='Space'||/^Arrow/.test(e.code))e.preventDefault()});
+addEventListener('keyup',e=>inp.codes.delete(e.code));
 
 const fwdOf=()=>[Math.sin(yaw)*Math.cos(pitch),Math.sin(pitch),-Math.cos(yaw)*Math.cos(pitch)];
 function readInput(){const f=fwdOf(),r=[Math.cos(yaw),0,Math.sin(yaw)],K=inp.keys;
@@ -1127,10 +1198,12 @@ function readInput(){const f=fwdOf(),r=[Math.cos(yaw),0,Math.sin(yaw)],K=inp.key
  const sx=inp.stick?inp.stick.x:0,sy=inp.stick?-inp.stick.y:0;
  // keyboard (beta 1.2): W A S D move on the level X/Y plane, E / C move along Z (up / down), whatever the view pitch
  const h=[Math.sin(yaw),0,-Math.cos(yaw)];
- const kf=(K.has('w')||K.has('arrowup')?1:0)-(K.has('s')||K.has('arrowdown')?1:0),ks=(K.has('d')||K.has('arrowright')?1:0)-(K.has('a')||K.has('arrowleft')?1:0);
- const vy=(inp.up!=null||K.has('e')?1:0)-(inp.dn!=null||K.has('c')?1:0);
+ // keys and mouse buttons come from the player's bindings (1.2.5)
+ const now=performance.now();for(const c in inp.wheel)if(now>inp.wheel[c]){inp.codes.delete(c);delete inp.wheel[c]}
+ const kf=(held('fwd')?1:0)-(held('back')?1:0),ks=(held('right')?1:0)-(held('left')?1:0);
+ const vy=(inp.up!=null||held('up')?1:0)-(inp.dn!=null||held('down')?1:0);
  let m=V.add(V.add(V.add(V.mul(f,sy),V.mul(r,sx)),V.add(V.mul(h,kf),V.mul(r,ks))),[0,vy,0]);const l=V.len(m);if(l>1)m=V.mul(m,1/l);
- const o={move:m,aim:f,fire:inp.fire!=null||K.has('f'),boost:inp.boost};inp.boost=false;return o}
+ const o={move:m,aim:f,fire:inp.fire!=null||held('fire'),boost:inp.boost};inp.boost=false;return o}
 
 // ---------- events → effects + HUD
 const feedEl=$('#feed');
