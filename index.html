@@ -1531,14 +1531,22 @@ function loadLib(){if(LOCAL)return Promise.resolve(LocalPeer);
 const turnCfg=()=>{try{const t=JSON.parse(localStorage.getItem('ng-mp-turn')||'null');return t&&t.url?t:null}catch(e){return null}};
 const ICE_BASE=[{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302']},{urls:'stun:stun.cloudflare.com:3478'},
  {urls:['turn:eu-0.turn.peerjs.com:3478','turn:us-0.turn.peerjs.com:3478'],username:'peerjs',credential:'peerjsp'}];
-function iceServers(){const t=turnCfg();if(!t)return ICE_BASE;const urls=t.url.split(/[\s,]+/).filter(Boolean).map(u=>/^turns?:/.test(u)?u:'turn:'+u);return ICE_BASE.concat([{urls,username:t.user||'',credential:t.pass||''}])}
+function myRelay(){const t=turnCfg();if(!t)return null;let urls=t.url.split(/[\s,]+/).filter(Boolean).map(u=>/^turns?:/i.test(u)?u:'turn:'+u.replace(/^\w+:\/\//,''));
+ urls=urls.flatMap(u=>/transport=/.test(u)||/^turns:/i.test(u)?[u]:[u,u+'?transport=tcp']);// also over TCP, for networks that block UDP
+ return{urls,username:t.user||'',credential:t.pass||''}}
+function iceServers(){const r=myRelay();return r?ICE_BASE.concat([r]):ICE_BASE}
 const candType=c=>{const m=/ typ (\w+)/.exec(c||'');return m?m[1]:null};
-// test which routes this device can find: local (same network), public (STUN), relay (TURN)
-async function testRoutes(){if(typeof RTCPeerConnection==='undefined')return null;const types=new Set();let pc;
- try{pc=new RTCPeerConnection({iceServers:iceServers()});pc.createDataChannel('t');pc.onicecandidate=e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)types.add(t)}};
+// test which routes this device can find: local (same network), public (STUN), relay (TURN). Reports errors instead of hiding them.
+async function gather(servers,relayOnly){const types=new Set();let pc,err=null;
+ try{pc=new RTCPeerConnection({iceServers:servers,iceTransportPolicy:relayOnly?'relay':'all'});pc.createDataChannel('t');
+  pc.onicecandidate=e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)types.add(t)}};
+  pc.addEventListener('icecandidateerror',e=>{if(!err&&e.errorCode&&e.errorCode!==701)err=`${e.errorCode} ${e.errorText||''} (${e.url||''})`.trim()});
   await pc.setLocalDescription(await pc.createOffer());
-  await new Promise(r=>{const t=setTimeout(r,7000);pc.onicegatheringstatechange=()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);r()}}})}catch(e){}
- try{pc&&pc.close()}catch(e){}return types}
+  await new Promise(r=>{const t=setTimeout(r,8000);pc.onicegatheringstatechange=()=>{if(pc.iceGatheringState==='complete'){clearTimeout(t);r()}}})}catch(e){err=(e&&(e.name+': '+e.message))||String(e)}
+ try{pc&&pc.close()}catch(e){}return{types,err}}
+async function testRoutes(){if(typeof RTCPeerConnection==='undefined')return null;
+ const base=await gather(ICE_BASE,false),r=myRelay(),mine=r?await gather([r],true):null;
+ if(mine&&mine.types.has('relay'))base.types.add('relay');return{types:base.types,err:base.err,mine}}
 const routeTxt=ts=>`local ${ts.has('host')?'✓':'✗'} · public ${ts.has('srflx')||ts.has('prflx')?'✓':'✗'} · relay ${ts.has('relay')?'✓':'✗'}`;
 // open a peer on the broker; resolves once it has an id
 function openPeer(P,id){return new Promise((res,rej)=>{let done=false,p;
@@ -1573,7 +1581,7 @@ function closeMP(){if(role&&!confirmLeave())return;teardown();$('#mp').classList
 function confirmLeave(){return true}// leaving from Back always closes the room; it's one tap to make a new one
 function showStart(err){$('#mpLobby').classList.add('hidden');$('#mpStart').classList.remove('hidden');drawStart();setBusy(false);$('#mpErr').textContent=err||''}
 function showLobby(){$('#mpStart').classList.add('hidden');$('#mpLobby').classList.remove('hidden');$('#lbCode').textContent=code;$('#lbStart').classList.toggle('hidden',role!=='host');
- $('#lbHint').textContent=role==='host'?'Friends open this page, tap Multiplayer → Join and enter the code. The share link fills it in for them.':'You\'re in. The host starts the match.';
+ $('#lbHint').textContent=role==='host'?(turnCfg()?'Send friends the Share link: it fills in the code and brings your relay, so they get in from cellular too.':'Friends open this page, tap Multiplayer → Join and enter the code. The share link fills it in for them.'):'You\'re in. The host starts the match.';
  if(lastRoster)renderLobby(lastRoster)}
 const pingCls=p=>p==null?'':p<80?'g':p<160?'y':'r';
 const setHTML=(sel,h)=>{const el=$(sel);if(el._h!==h){el._h=h;el.innerHTML=h}};// redraw only on change, so taps never land on a replaced button
@@ -1664,9 +1672,12 @@ async function joinRoom(){if(busy)return;saveName();const c=$('#mpCode').value.t
  const conn=peer.connect(PREFIX+c,{reliable:true,serialization:'json',metadata:{pid:PID}});hostConn=conn;
  // watch the direct connection: fail as soon as the browser gives up, and say which routes were tried
  const seen=new Set();let watched=null,iceFailed=false;
- const blockedMsg=()=>`Found room ${c}, but couldn't open a connection to the host (this phone found: ${routeTxt(seen)}). Same Wi-Fi often blocks this (router isolation). Fix: on the host, open Connection settings and add a relay (TURN), or put both devices on a phone hotspot.`;
+ const hook=pc=>{if(!pc||pc===watched)return;watched=pc;pc.addEventListener('icecandidate',e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)seen.add(t)}});
+  try{const ld=pc.localDescription&&pc.localDescription.sdp;if(ld)for(const l of ld.split('\n')){const t=candType(l);if(t)seen.add(t)}}catch(e){}};
+ hook(conn.peerConnection);
+ const blockedMsg=()=>`Found room ${c}, but couldn't open a connection to the host (this phone found: ${routeTxt(seen)}). ${seen.has('relay')?'Your relay was tried too: check the relay details on the host (Test connection should say relay ✓).':'Fix: add a relay (TURN) in Connection settings on the host, then open the host\'s Share link on this phone (it brings the relay along), or paste the same relay here.'}`;
  const watch=setInterval(()=>{if(role!=='client'||welcomed||hostConn!==conn){clearInterval(watch);return}const pc=conn.peerConnection;if(!pc)return;
-  if(pc!==watched){watched=pc;pc.addEventListener('icecandidate',e=>{if(e.candidate){const t=candType(e.candidate.candidate);if(t)seen.add(t)}})}
+  hook(pc);try{const ld=pc.localDescription&&pc.localDescription.sdp;if(ld)for(const l of ld.split('\n')){const t=candType(l);if(t)seen.add(t)}}catch(e){}
   if(pc.iceConnectionState==='failed'||pc.connectionState==='failed'){iceFailed=true;clearInterval(watch);fail(blockedMsg())}},400);
  joinT=setTimeout(()=>{clearInterval(watch);if(welcomed)return;fail(watched?blockedMsg():`Couldn't reach room ${c} through the room server. Check the code, check the host still has the room open, and try again.`)},25000);
  peer.on('error',e=>{if(role!=='client')return;if(!welcomed)fail(e&&e.type==='peer-unavailable'?`No room ${c}. Check the code with the host.`:netMsg(e))});
@@ -1717,9 +1728,13 @@ function saveName(){myName=cleanName($('#mpName').value)||myName;$('#mpName').va
 // ---------- connection settings
 function drawNet(){const t=turnCfg()||{};$('#tnUrl').value=t.url||'';$('#tnUser').value=t.user||'';$('#tnPass').value=t.pass||'';$('#tnState').textContent=t.url?'Your relay is on.':'No relay of your own yet (PeerJS\'s free relay is tried first).'}
 $('#tnSave').onclick=()=>{const url=$('#tnUrl').value.trim();if(url)sset(localStorage,'ng-mp-turn',JSON.stringify({url,user:$('#tnUser').value.trim(),pass:$('#tnPass').value}));else{try{localStorage.removeItem('ng-mp-turn')}catch(e){}}drawNet();toast(url?'Relay saved':'Relay removed')};
-$('#tnTest').onclick=async()=>{const b=$('#tnTest');b.disabled=true;$('#tnResult').textContent='Testing… (up to 7 s)';const ts=await testRoutes();b.disabled=false;
- if(!ts){$('#tnResult').textContent='This browser can\'t do peer-to-peer.';return}
- $('#tnResult').textContent=`This device: ${routeTxt(ts)}. `+(ts.has('relay')?'A relay works: friends should get in from any network.':ts.has('srflx')?'No relay: friends on networks that block direct connections (often the same Wi-Fi, or cellular) may not get in. Add a relay (TURN) below.':'Can\'t reach the internet route servers from here.')};
+$('#tnTest').onclick=async()=>{const b=$('#tnTest');b.disabled=true;$('#tnResult').textContent='Testing… (up to 16 s)';const R=await testRoutes();b.disabled=false;
+ if(!R){$('#tnResult').textContent='This browser can\'t do peer-to-peer (WebRTC is turned off). Try Chrome, Edge or Safari.';return}
+ const ts=R.types,parts=[`This device: ${routeTxt(ts)}.`];
+ if(!ts.size)parts.push(R.err?`The browser refused the connection setup: ${R.err}.`:'No routes at all: this browser is blocking WebRTC (a privacy setting such as Brave Shields, an ad-blocker or "WebRTC leak" extension, or a VPN). Try Chrome, Edge or Safari with extensions off.');
+ else if(R.mine)parts.push(R.mine.types.has('relay')?'Your relay works: friends should get in from any network.':`Your relay did not answer${R.mine.err?' ('+R.mine.err+')':''}: check the server, username and password.`);
+ else parts.push(ts.has('relay')?'PeerJS\'s free relay works.':'No relay: friends on networks that block direct connections (cellular, some Wi-Fi) may not get in. Add a relay (TURN) above.');
+ $('#tnResult').textContent=parts.join(' ')};
 // ---------- wiring
 $('#mpBtn').onclick=()=>{openMP();drawNet()};$('#mpBack').onclick=closeMP;
 $('#mpHost').onclick=()=>{NG.audio&&NG.audio();hostRoom()};$('#mpJoin').onclick=()=>{NG.audio&&NG.audio();joinRoom()};$('#lbStart').onclick=startMatch;
@@ -1733,7 +1748,10 @@ $('#lbMatch').onclick=e=>{if(role!=='host')return;const b=e.target.closest('butt
  if(b.dataset.m)$(`#modes button[data-m="${b.dataset.m}"]`).click();else if(b.dataset.map)$(`#maps button[data-map="${b.dataset.map}"]`).click();
  // the squad screen is hidden behind us; keep it hidden
  $('#home').classList.add('hidden');broadcast()};
-const link=()=>location.origin+location.pathname+'?room='+code+(LOCAL?'&net=local':'');
+const b64u=t=>btoa(unescape(encodeURIComponent(t))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const unb64u=t=>decodeURIComponent(escape(atob(t.replace(/-/g,'+').replace(/_/g,'/'))));
+// the share link carries the host's relay, so friends on strict networks (cellular) use it too without typing anything
+const link=()=>{const t=turnCfg();return location.origin+location.pathname+'?room='+code+(t?'&relay='+b64u(JSON.stringify({url:t.url,user:t.user||'',pass:t.pass||''})):'')+(LOCAL?'&net=local':'')};
 async function copy(text){try{await navigator.clipboard.writeText(text);return true}catch(e){}
  try{const t=document.createElement('textarea');t.value=text;t.style.position='fixed';t.style.opacity='0';document.body.appendChild(t);t.select();const ok=document.execCommand('copy');t.remove();return ok}catch(e){return false}}
 $('#lbShare').onclick=async()=>{const url=link();if(navigator.share){try{await navigator.share({title:'NULL GATE',text:`Join my NULL GATE room: ${code}`,url});return}catch(e){if(e&&e.name==='AbortError')return}}
@@ -1742,9 +1760,11 @@ $('#lbCopy').onclick=async()=>toast(await copy(code)?`Code ${code} copied`:code)
 addEventListener('pagehide',()=>{if(role)teardown()});
 // a shared link (?room=ABCD) opens Join with the code filled in
 const qRoom=(QS.get('room')||'').toUpperCase().replace(/[^A-Z]/g,'').slice(0,4);
-if(qRoom.length===4){$('#mpCode').value=qRoom;openMP();$('#mpJoinNote').textContent=`Room ${qRoom} from your link: check your name, then tap JOIN.`}
+let relayFromLink=false;
+try{const r=QS.get('relay');if(r){const t=JSON.parse(unb64u(r));if(t&&typeof t.url==='string'&&t.url){sset(localStorage,'ng-mp-turn',JSON.stringify({url:t.url.slice(0,300),user:String(t.user||'').slice(0,200),pass:String(t.pass||'').slice(0,200)}));relayFromLink=true}}}catch(e){}
+if(qRoom.length===4){$('#mpCode').value=qRoom;openMP();drawNet();$('#mpJoinNote').textContent=`Room ${qRoom} from your link${relayFromLink?' (with the host\'s relay)':''}: check your name, then tap JOIN.`}
 // test hooks
-window.__NGMP={start:startMatch,get playing(){return playing},get role(){return role},get code(){return code},get roster(){return lastRoster},get players(){return players},PID,host:hostRoom,join:joinRoom,leave:()=>{teardown();showStart('')}};
+window.__NGMP={link:()=>link(),start:startMatch,get playing(){return playing},get role(){return role},get code(){return code},get roster(){return lastRoster},get players(){return players},PID,host:hostRoom,join:joinRoom,leave:()=>{teardown();showStart('')}};
 })();
 </script>
 </body></html>
