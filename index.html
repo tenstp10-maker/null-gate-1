@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="theme-color" content="#05070c">
-<title>NULL GATE · 1.3 MP-4.1</title>
+<title>NULL GATE · 1.3 MP-4.2</title>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
 /* VOICE: a squad briefing on a carrier deck: terse callouts, numbers you trust.
@@ -245,24 +245,139 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
 .tnGrid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px;margin-top:6px}
 #mp .tnGrid input{font:600 13px var(--hud)}
 @media (max-width:720px) and (orientation:portrait){.tnGrid{grid-template-columns:1fr}}
+
+/* ---------- home, 1.3 MP-4.2: two-step menu (map & mode, then team & squad) over the live arena */
+#home{background:radial-gradient(ellipse at 50% 40%,#05070c55,#05070cd8 75%)}
+.nh{--glow:#2f8cff;--edge:#3d7fd6;--org:#ff9a3c;max-width:1180px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:12px;padding:14px 22px 0;
+ background:linear-gradient(160deg,rgba(16,30,58,.9),rgba(6,10,20,.93) 60%);border:1px solid #3d7fd655;
+ clip-path:polygon(24px 0,100% 0,100% calc(100% - 24px),calc(100% - 24px) 100%,0 100%,0 24px)}
+.nhHead{display:flex;align-items:center;gap:16px;padding-bottom:12px;border-bottom:1px solid #3d7fd633;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;margin-right:auto}.emblem{width:46px;height:46px;flex:none;filter:drop-shadow(0 0 8px #2f8cff88)}
+#home .logo{font:700 22px/1 var(--hud);letter-spacing:.3em}
+.steps{display:flex;align-items:center;gap:10px;list-style:none;margin:0;padding:0}
+.steps li{display:flex;align-items:center;gap:8px;font:700 12px var(--hud);letter-spacing:.06em;color:var(--dim);cursor:pointer;min-height:44px}
+.steps li b{width:30px;height:30px;border-radius:50%;border:2px solid #9aa8c699;display:grid;place-items:center;font-size:14px}
+.steps li.on{color:#fff}.steps li.on b{background:var(--glow);border-color:#9fd0ff;color:#fff;box-shadow:0 0 16px #2f8cffaa}
+.steps li.done b{border-color:#5fb0ff;color:#5fb0ff}
+.steps i{width:56px;height:1px;background:linear-gradient(90deg,#9aa8c655,#5fb0ff99)}
+.hIcons{display:flex;gap:8px;align-items:center}
+.hIcons button{background:#0b1424;border-color:#3d7fd666;border-radius:8px}.hIcons svg{width:21px;height:21px}
+.ib{width:46px;padding:0;display:grid;place-items:center}.ib:hover,.nhFoot .mpFoot:hover{border-color:#5fb0ff;box-shadow:0 0 10px #2f8cff55}
+.nhFoot .mpFoot{display:flex;align-items:center;gap:10px;color:var(--gold);border-color:#ffd36a88}.nhFoot .mpFoot svg{width:22px;height:22px}
+#sndBtn .sOff,#sndBtn.off .sOn{display:none}#sndBtn.off .sOff{display:inline}#sndBtn.off{color:var(--dim)}
+.sh{margin:6px 0 0;font:700 20px var(--hud);letter-spacing:.08em;display:flex;align-items:center;gap:10px;color:#e8eefc}
+.sh:before{content:"";width:4px;height:14px;background:var(--org);clip-path:polygon(0 0,100% 20%,100% 80%,0 100%)}
+.step{display:flex;flex-direction:column;gap:12px}
+.mapCards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.mapCards button{position:relative;padding:0;aspect-ratio:16/9;min-height:0;border:2px solid #3d7fd644;border-radius:6px;overflow:hidden;background:linear-gradient(135deg,#17305a,#0a1220 70%);transition:border-color .15s,box-shadow .15s}
+.mapCards img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .4s}.mapCards img.ok{opacity:1}
+.mapCards .nm{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:space-between;padding:26px 14px 10px;text-align:left;font:700 16px var(--hud);letter-spacing:.08em;background:linear-gradient(transparent,#05070cee)}
+.chev{width:14px;height:14px;color:#5fb0ff;opacity:0}
+.mapCards button:hover{border-color:#5fb0ff99}
+.mapCards button.on{border-color:#6ab8ff;box-shadow:0 0 0 1px #6ab8ff,0 0 26px #2f8cff99}.mapCards button.on .chev{opacity:1}
+.modeCards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.modeCards button{min-height:116px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid #3d7fd666;border-radius:4px;background:#0a1322cc;padding:10px}
+.modeCards svg{width:42px;height:42px;color:#d6e6ff}.modeCards b{font:700 17px var(--hud);letter-spacing:.08em}.modeCards small{font:500 13px Inter;color:#b8c6e2}
+.modeCards button:hover{border-color:#5fb0ff}
+.modeCards button.on{background:linear-gradient(160deg,#2266d4,#103a8a);border:2px solid #6ab8ff;box-shadow:0 0 22px #2f8cff88}.modeCards button.on small{color:#e3efff}
+.info{display:grid;grid-template-columns:220px minmax(0,1fr) auto;gap:18px;align-items:center;background:#0a1322d0;border:1px solid #3d7fd644;border-left:3px solid var(--org);padding:10px}
+.info img{width:220px;aspect-ratio:16/9;object-fit:cover;border-radius:3px;background:#132544}
+.info h3{margin:0 0 4px;font:700 18px var(--hud);letter-spacing:.08em}.info p{margin:2px 0;font-size:13.5px;color:#c8d3ea}.info .infoDesc{color:var(--dim)}
+.facts{list-style:none;margin:0;padding:0 6px 0 18px;border-left:1px solid #3d7fd644;display:flex;flex-direction:column;gap:8px;font:600 13px Inter;color:#d6e0f4}
+.facts li{display:flex;align-items:center;gap:10px;white-space:nowrap}.facts svg{width:20px;height:20px;color:#8fb8ef;flex:none}
+.vs{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:18px;align-items:center;padding:6px 2% 0}
+#home .tm{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px;border:2px solid;border-radius:0;text-align:center;letter-spacing:0;
+ clip-path:polygon(7% 0,100% 0,93% 100%,0 100%);transition:filter .2s,opacity .2s,transform .2s;filter:saturate(.45) brightness(.7);font:inherit}
+#home .tm.blue{background:radial-gradient(ellipse at 50% 30%,#2c6ee0,#0d2a68 75%);border-color:#4c9dff}
+#home .tm.red{background:radial-gradient(ellipse at 50% 30%,#d8432f,#6a1510 75%);border-color:#ff6a52;clip-path:polygon(0 0,93% 0,100% 100%,7% 100%)}
+#home .tm.on{filter:none;transform:scale(1.03)}#home .tm.blue.on{box-shadow:inset 0 0 40px #8fd0ff55}#home .tm.red.on{box-shadow:inset 0 0 40px #ffb09955}
+#home .tm:hover{filter:saturate(.8) brightness(.9)}#home .tm.on:hover{filter:none}
+.tEm{width:86px;height:86px;filter:drop-shadow(0 4px 10px #0008)}
+#home .tm b{font:700 23px var(--hud);letter-spacing:.1em;color:#fff}#home .tm small{font:500 13px Inter;color:#e8eefccc;letter-spacing:.02em}
+#home .tm.on b:after{content:"YOUR TEAM";display:block;margin:6px auto 0;width:max-content;font:700 10px var(--hud);letter-spacing:.16em;color:#081022;background:#e8eefc;padding:2px 8px;border-radius:3px}
+.vsT{font:italic 800 60px/1 var(--hud);color:#f2f6ff;text-shadow:0 0 22px #5fb0ff,0 0 4px #fff;letter-spacing:.02em}
+.squads{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:0 2%}
+.sqBox{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#0a1322b8;border:1px solid #3d7fd633;border-radius:6px;padding:6px 8px}
+.sqBox .lbl{width:auto;font-size:10px;letter-spacing:.12em}.sqBox .chips{flex:1}.sqBox .mini{min-height:40px;font-size:12px;background:#0b1424}
+.sqHint{margin:-4px 0 0;text-align:center;font-size:12px;color:var(--dim)}
+.pill{align-self:center;display:flex;align-items:center;gap:2px;background:#0a1322;border:1px solid #3d7fd677;border-radius:8px;padding:3px 4px}
+.pill .pLbl{font:700 11px var(--hud);letter-spacing:.14em;color:#c8d3ea;padding:0 10px 0 4px}
+.pill button{border:0;min-height:40px}.pill button[data-d]{display:none;min-width:84px;font:800 15px var(--hud);letter-spacing:.1em;color:#5fb8ff}.pill button[data-d].on{display:block}
+.pill .arr{min-width:40px;font:700 20px var(--hud);color:#e8eefc}.pill .arr:disabled{opacity:.25;cursor:default}
+#home .cards{gap:12px}#home .card{background:#0a1322d8;border:1px solid #3d7fd666;border-radius:4px}
+#home .card.on{border:2px solid #6ab8ff;background:linear-gradient(160deg,#173c80,#0b1c40);box-shadow:0 0 20px #2f8cff77}
+#home .card.on .bars i.f{background:#8fd0ff}#home .card .tag{background:var(--org)}
+.nhFoot{position:sticky;bottom:calc(-10px - env(safe-area-inset-bottom));z-index:2;display:flex;align-items:center;gap:14px;margin:auto -22px 0;padding:14px 22px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(#05070c00,#060b16f2 40%);border-top:1px solid #3d7fd622}
+.footSel{flex:1;text-align:center;font:600 12px var(--hud);letter-spacing:.08em;color:var(--dim)}
+.nhFoot .back{min-height:52px;padding:0 26px;font:700 16px var(--hud);letter-spacing:.12em;background:#0b1424;border:1px solid #3d7fd677;border-radius:0;clip-path:polygon(14px 0,100% 0,100% 100%,0 100%,0 14px)}
+.nhFoot .go{min-height:58px;padding:0 44px;border:0;border-radius:0;font:800 21px var(--hud);letter-spacing:.14em;color:#04122a;white-space:nowrap;
+ background:linear-gradient(180deg,#7cc6ff,#2f86f0);clip-path:polygon(20px 0,100% 0,calc(100% - 20px) 100%,0 100%);box-shadow:none;filter:drop-shadow(0 0 14px #2f8cff99)}
+.nhFoot .go:hover{background:linear-gradient(180deg,#9ad4ff,#4596f6)}
+@media (max-width:980px){.info{grid-template-columns:160px minmax(0,1fr)}.info img{width:160px}.facts{grid-column:1/-1;flex-direction:row;flex-wrap:wrap;border:0;padding:0;gap:6px 16px}.steps i{width:28px}}
+@media (max-width:860px){.steps span{display:none}}
+@media (max-width:720px) and (orientation:portrait){.nh{padding:10px 12px 0;clip-path:none}.nhFoot{margin:auto -12px 0;padding-left:12px;padding-right:12px}
+ .brand .emblem{width:36px;height:36px}#home .logo{font-size:18px;letter-spacing:.2em}.nhHead{gap:8px}.steps{order:3;width:100%;justify-content:center}
+ .mapCards{gap:8px}.mapCards button{aspect-ratio:4/5}.mapCards .nm{font-size:12px;padding:18px 8px 8px}.chev{display:none}
+ .modeCards{gap:8px}.modeCards button{min-height:92px;padding:8px 4px}.modeCards small{font-size:11px;text-align:center}.modeCards b{font-size:13px}.modeCards svg{width:32px;height:32px}
+ .info{grid-template-columns:1fr}.info img{display:none}
+ .vs{gap:8px;padding:0}#home .tm{min-height:150px;padding:10px 6px}.tEm{width:56px;height:56px}#home .tm b{font-size:16px}#home .tm small{font-size:11px}.vsT{font-size:34px}
+ .squads{grid-template-columns:1fr;gap:8px;padding:0}.sqBox .lbl{width:100%}.sqBox .chips{flex:1 1 auto}
+ .nhFoot .go{padding:0 26px;font-size:18px;flex:1}.nhFoot .back{padding:0 16px}.nhFoot .mpFoot span{display:none}.footSel{display:none}}
+@media (max-height:460px){.nh{padding:8px 16px 0;gap:8px}.nhHead{padding-bottom:6px}.emblem{width:36px;height:36px}#home .logo{font-size:18px}.steps li{min-height:40px}.steps li b{width:26px;height:26px}
+ .sh{font-size:15px;margin:0}.mapCards button{aspect-ratio:16/7}.mapCards .nm{font-size:13px;padding:14px 10px 6px}
+ .modeCards button{min-height:66px;flex-direction:row;gap:10px}.modeCards small{display:none}.modeCards svg{width:30px;height:30px}
+ .info{grid-template-columns:130px minmax(0,1fr) auto;padding:6px;gap:12px}.info img{width:130px}.info .infoDesc{display:none}.facts{grid-column:auto;flex-direction:column;border-left:1px solid #3d7fd644;padding-left:12px;gap:4px;font-size:12px}
+ #home .tm{min-height:120px;padding:8px}.squads{gap:10px;padding:0}.sqBox{padding:4px 6px;gap:6px}.sqBox .lbl{display:none}#home .chip,.sqBox .mini{min-height:36px;font-size:12px}.sqHint{display:none}.tEm{width:50px;height:50px}#home .tm b{font-size:17px}.vsT{font-size:38px}
+ .nhFoot{margin:auto -16px 0;padding:8px 16px 10px}.nhFoot .go{min-height:48px;font-size:18px}.nhFoot .back{min-height:46px}}
+@media (max-height:460px) and (max-width:980px){.facts{display:none}.info{grid-template-columns:130px minmax(0,1fr)}}
+@media (prefers-reduced-motion:reduce){.mapCards button,#home .tm,.mapCards img{transition:none}}
 </style></head><body>
 <canvas id="gl"></canvas>
 
-<!-- HOME / TEAM SELECTION -->
-<div id="home" class="screen"><div class="homeIn">
- <header><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-4.1</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div>
-  <div class="modes" id="modes" role="group" aria-label="Game mode"><button data-m="eclipse">ECLIPSE</button><button data-m="twin">TWIN ORBIT</button><button data-m="ring">RING RUN</button></div>
-  <button class="hb mpBtn" id="mpBtn">Multiplayer</button><button class="hb" id="rulesBtn">How to play</button><button class="hb" id="mapBtn">Map</button><button class="hb" id="hudBtn">HUD</button><button class="hb" id="bindBtn">Controls</button><button class="hb" id="sndBtn" aria-pressed="true">Sound on</button></header>
- <div class="grid">
-  <section class="sec a-team"><h2><b>1</b>Team</h2><div class="teams">
-   <button class="tm blue" data-team="blue">BLUE<small class="spw">Spawns at the blue gate</small></button>
-   <button class="tm red" data-team="red">RED<small class="spw">Spawns at the red gate</small></button></div></section>
-  <section class="sec a-cls"><h2><b>2</b>Your specialty</h2><div class="cards" id="cards"></div></section>
-  <section class="sec a-squad"><h2><b>3</b>Squads <span class="hint">· tap a bot to change its specialty</span><button class="mini" id="shuffleFoes">Shuffle enemy</button></h2>
-   <div class="sqRow"><span class="lbl you">Yours</span><div class="chips" id="mates"></div></div>
-   <div class="sqRow"><span class="lbl foe">Enemy</span><div class="chips" id="foes"></div></div></section>
- </div>
- <div class="deployRow"><div class="diff" id="diff" role="group" aria-label="Bot difficulty"><button data-d="easy">Easy</button><button data-d="normal">Normal</button><button data-d="hard">Hard</button></div><div class="maps" id="maps" role="group" aria-label="Map"><button data-map="planets">PLANETS</button><button data-map="forts">ARENA</button><button data-map="core">CORE ARENA</button></div><div class="mapName" id="mapName"></div><button class="deploy" id="deploy">DEPLOY ▸</button></div>
+<!-- HOME (1.3 MP-4.2): two steps, map and mode, then team and squad -->
+<div id="home" class="screen"><div class="nh">
+ <header class="nhHead">
+  <div class="brand"><svg class="emblem" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="emG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe2ff"/><stop offset="1" stop-color="#3d8cff"/></linearGradient></defs>
+ <path d="M24 4a20 20 0 1 1-14.1 5.9" fill="none" stroke="url(#emG)" stroke-width="3" stroke-linecap="round"/><path d="M24 4a20 20 0 0 0-8.2 1.8" fill="none" stroke="#ff9a3c" stroke-width="3" stroke-linecap="round"/>
+ <path d="M14 32l10-17 10 17h-6l-4-7-4 7z" fill="url(#emG)"/><circle cx="24" cy="36" r="2.2" fill="#ff9a3c"/></svg><div class="logo">NULL GATE<span class="beta">BETA 1.3 MP-4.2</span><small id="sub" data-beta>ECLIPSE · 3 V 3 · OFFLINE</small></div></div>
+  <ol class="steps" aria-label="Steps"><li data-s="1" role="button" tabindex="0"><b>1</b><span>SELECT MAP &amp; MODE</span></li><i></i><li data-s="2" role="button" tabindex="0"><b>2</b><span>SELECT TEAM</span></li></ol>
+  <div class="hIcons">
+   <button class="ib" id="rulesBtn" aria-label="How to play" title="How to play"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 1 1 3.4 2.4c-.7.3-1 .8-1 1.5v.6"/><circle cx="12" cy="16.9" r=".6" fill="currentColor"/></svg></button>
+   <button class="ib" id="mapBtn" aria-label="Maps" title="Maps"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5l6-2.5 6 2.5 6-2.5v13.5l-6 2.5-6-2.5-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/></svg></button>
+   <button class="ib" id="hudBtn" aria-label="Customize HUD" title="HUD"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></button>
+   <button class="ib" id="bindBtn" aria-label="Controls" title="Controls"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+   <button class="ib" id="sndBtn" aria-label="Sound on" aria-pressed="true" title="Sound"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path class="sOn" d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/><path class="sOff" d="M16 9.5l5 5M21 9.5l-5 5"/></svg></button>
+  </div>
+ </header>
+
+ <section id="st1" class="step">
+  <h2 class="sh">SELECT MAP</h2>
+  <div class="mapCards" id="maps" role="group" aria-label="Map"><button data-map="planets" aria-label="PLANETS map"><img alt="" data-thumb="planets"><span class="nm">PLANETS<svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><button data-map="forts" aria-label="ARENA map"><img alt="" data-thumb="forts"><span class="nm">ARENA<svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><button data-map="core" aria-label="CORE ARENA map"><img alt="" data-thumb="core"><span class="nm">CORE ARENA<svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M4 2l4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button></div>
+  <h2 class="sh">SELECT GAME MODE</h2>
+  <div class="modeCards" id="modes" role="group" aria-label="Game mode"><button data-m="eclipse"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13" cy="13" r="7.5"/><path d="M13 5.5a7.5 7.5 0 0 0 0 15z" fill="currentColor"/><circle cx="20" cy="5" r="1.6" fill="currentColor"/><path d="M20 1.2v1M20 7.8v1M16.2 5h1M22.8 5h1"/></svg><b>ECLIPSE</b><small>Double points in planet shadow</small></button><button data-m="twin"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-25 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(25 12 12)"/></svg><b>TWIN ORBIT</b><small>Two hills, opposite orbits</small></button><button data-m="ring"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><ellipse cx="12" cy="12" rx="11" ry="3.6" transform="rotate(-18 12 12)"/><circle cx="3.6" cy="14.8" r="1" fill="currentColor"/><circle cx="20.6" cy="9.4" r="1" fill="currentColor"/><circle cx="17" cy="15.6" r=".8" fill="currentColor"/></svg><b>RING RUN</b><small>The hill flies through a debris ring</small></button></div>
+  <div class="info"><img id="infoImg" alt=""><div class="infoTx"><h3 id="infoName">PLANETS</h3><p id="mapName"></p><p class="infoDesc" id="infoDesc"></p></div>
+   <ul class="facts"><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16.5" cy="9" r="3"/><path d="M2.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6M12 15.2c1.2-.5 2.8-.8 4.5-.8 2.7 0 4.9 1.6 5.5 4.6"/></svg>3 v 3 · bots fill in</li><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>6:00 · first to 150</li><li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-20 12 12)"/></svg>Zero gravity · <span id="infoSize"></span></li></ul></div>
+ </section>
+
+ <section id="st2" class="step hidden">
+  <h2 class="sh">SELECT YOUR TEAM</h2>
+  <div class="vs">
+   <button class="tm blue" data-team="blue"><svg class="tEm" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="25" fill="none" stroke="#bfe2ff" stroke-width="3" stroke-dasharray="120 14" transform="rotate(-60 32 32)"/><path d="M17 42l15-25 15 25h-8l-7-12-7 12z" fill="#e8f3ff"/><path d="M26 46h12" stroke="#8fc8ff" stroke-width="3" stroke-linecap="round"/></svg><b>BLUE TEAM</b><small class="spw">Spawns at the blue gate</small></button>
+   <span class="vsT" aria-hidden="true">VS</span>
+   <button class="tm red" data-team="red"><svg class="tEm" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 7l21 12v26L32 57 11 45V19z" fill="none" stroke="#ffc9b8" stroke-width="3" stroke-linejoin="round"/><path d="M20 24l12 18 12-18h-7l-5 8-5-8z" fill="#fff0ea"/><circle cx="32" cy="17" r="3" fill="#ffc9b8"/></svg><b>RED TEAM</b><small class="spw">Spawns at the red gate</small></button>
+  </div>
+  <div class="squads"><div class="sqCol blue"></div><div class="sqCol red"></div></div>
+  <div id="sqPool" hidden>
+   <div class="sqBox" id="matesBox"><span class="lbl you">YOUR SQUAD</span><div class="chips" id="mates"></div></div>
+   <div class="sqBox" id="foesBox"><span class="lbl foe">ENEMY SQUAD</span><div class="chips" id="foes"></div><button class="mini" id="shuffleFoes">Shuffle</button></div>
+  </div>
+  <p class="sqHint">Tap a bot to change its specialty.</p>
+  <div class="pill" id="diff" role="group" aria-label="Bot difficulty"><button class="arr" data-step="-1" aria-label="Easier bots">‹</button><span class="pLbl">BOTS</span><button data-d="easy">EASY</button><button data-d="normal">NORMAL</button><button data-d="hard">HARD</button><button class="arr" data-step="1" aria-label="Harder bots">›</button></div>
+  <h2 class="sh">YOUR SPECIALTY</h2>
+  <div class="cards" id="cards"></div>
+ </section>
+
+ <div class="nhFoot"><button class="back mpFoot" id="mpBtn"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="9" r="3"/><circle cx="16.5" cy="9" r="3"/><path d="M2.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6M12 15.2c1.2-.5 2.8-.8 4.5-.8 2.7 0 4.9 1.6 5.5 4.6"/></svg><span>Multiplayer</span></button><button class="back" id="hBack">‹&nbsp; BACK</button><span class="footSel" id="footSel"></span><button class="go" id="hNext">NEXT &nbsp;›</button><button class="go deploy" id="deploy">DEPLOY &nbsp;›</button></div>
 </div></div>
 
 <!-- MULTIPLAYER (1.3 · step 1) -->
@@ -388,7 +503,7 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
  <div class="mrow"><button class="pri" id="bdDone">Done</button><button id="bdReset">Reset to defaults</button></div></div></div>
 
 <!-- RULES -->
-<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-4.1</h3>
+<div id="rules" class="modal hidden"><div><h3>HOW TO PLAY · NULL GATE 1.3 MP-4.2</h3>
  <h4>Win</h4><ul><li>3 vs 3. Pick a map on the home screen: <b>Planets</b>, <b>Arena</b> (the forts) or <b>Core Arena</b>; every mode plays on all three. Your team scores 1 point a second while only your team is inside a live hill. If both teams are inside, nobody scores there.</li><li>First to <b>150</b> wins. At <b>6:00</b> the higher score wins.</li></ul>
  <h4>Every mode</h4><ul><li>Hills circle a body, one lap every 37 s, then move to the next: on Planets, A rock → B gas → C ice; on Arena, the core inside each fort; on Core Arena, the core (A), then beacons B and C. Gold dots trace the live orbit; the gold ring on your screen points to the live hill.</li><li>The live hill has gravity: inside, it carries you along and pulls you to its middle, so you can stop steering and fight. Steer to move or leave.</li><li>When the hill moves on, anyone still inside is slung out along its path.</li><li>Each live hill has a moon and asteroids circling it. Planets, moons and asteroids are solid: they block shots and movement.</li><li>Each team spawns on its home planet (Planets) or its home wall (Arena, Core Arena).</li><li><b>Planets pull on shots.</b> A bolt flying past a planet curves toward it: more the closer it passes and the longer it flies, so Power's 80 m shots bend most. Gas giant B pulls hardest, then rock A, then ice C; moons pull a little. The arena cores and beacons are small but dense, pulling about as hard as rock A. When a planet will bend your shot, a dotted aim arc shows where it goes (red end = it hits the planet). Aim assist and bots allow for the bend too.</li></ul>
  <h4>Eclipse</h4><ul><li>A star lights one side of each planet. For about 14 s of every lap the hill passes through the planet's shadow.</li><li>In shadow the hill scores <b>2 points a second</b>. The orbit dots dim there.</li><li>Enemies in shadow are hidden beyond 15 m, unless they fired in the last second. Bots play by the same rule.</li></ul>
@@ -397,7 +512,7 @@ tr.b td:first-child{color:#7fc0ff}tr.r td:first-child{color:#ff8a6e}tr.me td{bac
  <h4>Getting hit</h4><ul><li>Each hit takes 1 shield cell. A hit with no cells left freezes you.</li><li>Frozen soldiers respawn after 4 s, fully shielded, at the safest spawn on their home planet or wall.</li><li>Cells come back one at a time once you go 3 s without being hit.</li></ul>
  <h4>Specialties</h4><ul><li><b>Shield · Bulwark</b>: 3 shield cells. Slowest, shortest range (34 m).</li><li><b>Speed · Comet</b>: fastest, with a dash. 1 cell, 40 m range.</li><li><b>Power · Lancer</b>: 80 m range, and every hit knocks off a whole shield. Slow to fire, 1 cell.</li></ul>
  <div class="tri"><span>Power beats Shield</span><span>Speed beats Power</span><span>Shield beats Speed</span></div>
- <h4>Controls</h4><ul><li>Left thumb: drag anywhere on the left side to fly where you look.</li><li>Right thumb: drag to look. Hold FIRE to shoot. ▲ / ▼ thrust up and down. DASH (Speed only) bursts forward.</li><li>Keyboard (default): W A S D move forward, back and sideways on the level plane (looking up or down doesn't tilt it). E moves up, C moves down. Mouse to look (click to lock the pointer), click or F to fire, Shift to dash, Esc to pause.</li><li><b>Controls:</b> tap Controls on the home screen or in the pause menu to change any movement, fire or dash binding (keys, mouse buttons or the wheel, two per action), the look speed and invert look. Settings are saved on this device.</li><li><b>HUD:</b> tap HUD on the home screen, or Customize HUD in the pause menu, to change the crosshair, HUD size and opacity, what the HUD shows, and the touch buttons (size, opacity, left-handed, and drag to move). Settings are saved on this device.</li></ul>
+ <h4>Controls</h4><ul><li>Left thumb: drag anywhere on the left side to fly where you look.</li><li>Right thumb: drag to look. Hold FIRE to shoot. ▲ / ▼ thrust up and down. DASH (Speed only) bursts forward.</li><li>Keyboard (default): W A S D move forward, back and sideways on the level plane (looking up or down doesn't tilt it). E moves up, C moves down. Mouse to look (click to lock the pointer), click or F to fire, Shift to dash, Esc to pause.</li><li><b>Controls:</b> tap Controls on the home screen or in the pause menu to change any movement, fire or dash binding (keys, mouse buttons or the wheel, two per action), the look speed and invert look. Settings are saved on this device.</li><li><b>Menu:</b> step 1 picks the map and game mode, step 2 your team, specialty, the bots' specialties and difficulty. The icons at the top right open How to play, Maps, HUD, Controls and Sound.</li><li><b>HUD:</b> tap HUD on the home screen, or Customize HUD in the pause menu, to change the crosshair, HUD size and opacity, what the HUD shows, and the touch buttons (size, opacity, left-handed, and drag to move). Settings are saved on this device.</li></ul>
  <div class="mrow"><button class="pri" id="closeRules">Got it</button></div></div></div>
 
 <!-- MAP / WORLD BUILDER IMPORT -->
@@ -1036,7 +1151,8 @@ function drawHome(){
  $$('#diff button').forEach(b=>{b.classList.toggle('on',b.dataset.d===prefs.diff);b.setAttribute('aria-pressed',b.dataset.d===prefs.diff)});
  $('#mapName').textContent=MAPTXT[prefs.map][prefs.mode];
  $$('#maps button').forEach(b=>{b.classList.toggle('on',b.dataset.map===prefs.map);b.setAttribute('aria-pressed',b.dataset.map===prefs.map)});
- for(const b of[$('#sndBtn'),$('#pSnd')]){b.textContent=prefs.sound?'Sound on':'Sound off';b.setAttribute('aria-pressed',prefs.sound)}}
+ {const b=$('#pSnd');b.textContent=prefs.sound?'Sound on':'Sound off';b.setAttribute('aria-pressed',prefs.sound)}{const b=$('#sndBtn');b.classList.toggle('off',!prefs.sound);b.setAttribute('aria-pressed',prefs.sound);b.setAttribute('aria-label',prefs.sound?'Sound on':'Sound off')}
+ homeExtra()}
 $('#maps').onclick=e=>{const b=e.target.closest('button');if(!b||b.dataset.map===prefs.map)return;prefs.map=b.dataset.map;savePrefs();resetDemo();drawHome()};
 $('#modes').onclick=e=>{const b=e.target.closest('button');if(!b||b.dataset.m===prefs.mode)return;prefs.mode=b.dataset.m;savePrefs();resetDemo();drawHome()};
 $$('.tm').forEach(b=>b.onclick=()=>{prefs.team=b.dataset.team;savePrefs();drawHome()});
@@ -1044,8 +1160,38 @@ $('#cards').onclick=e=>{const b=e.target.closest('.card');if(!b)return;prefs.cls
 const cycle=id=>G.CLASS_IDS[(G.CLASS_IDS.indexOf(id)+1)%3];
 for(const k of['mates','foes'])$('#'+k).onclick=e=>{const b=e.target.closest('.chip[data-k]');if(!b)return;prefs[k][+b.dataset.i]=cycle(prefs[k][+b.dataset.i]);savePrefs();drawHome()};
 $('#shuffleFoes').onclick=()=>{prefs.foes=prefs.foes.map(()=>G.CLASS_IDS[Math.floor(Math.random()*3)]);savePrefs();drawHome()};
-$('#diff').onclick=e=>{const b=e.target.closest('button');if(!b)return;prefs.diff=b.dataset.d;savePrefs();drawHome()};
+$('#diff').onclick=e=>{const b=e.target.closest('button');if(!b)return;const L=['easy','normal','hard'];prefs.diff=b.dataset.step?L[Math.max(0,Math.min(2,L.indexOf(prefs.diff)+ +b.dataset.step))]:b.dataset.d||prefs.diff;savePrefs();drawHome()};
 const toggleSound=()=>{prefs.sound=!prefs.sound;savePrefs();drawHome()};$('#sndBtn').onclick=toggleSound;$('#pSnd').onclick=toggleSound;
+// ---------- home menu (1.3 MP-4.2): step 1 map & mode, step 2 team & squad
+const MAPINFO={planets:{name:'PLANETS',size:'140 × 90 × 240 m',txt:'Two home planets, the rock, gas and ice hill planets, and three small moons.'},
+ forts:{name:'ARENA',size:'80 × 56 × 120 m',txt:'The Hardpoint arena: three hollow forts, each with a dense core the hill circles.'},
+ core:{name:'CORE ARENA',size:'80 × 56 × 140 m',txt:'An enclosed arena with chamfered edges, gate barriers and rotated cover.'}};
+let hStep=1;
+function setStep(n){hStep=n;$('#st1').classList.toggle('hidden',n!==1);$('#st2').classList.toggle('hidden',n!==2);
+ $$('.steps li').forEach(li=>{const k=+li.dataset.s;li.classList.toggle('on',k===n);li.classList.toggle('done',k<n);li.setAttribute('aria-current',k===n?'step':'false')});
+ $('#hBack').classList.toggle('hidden',n===1);$('#mpBtn').classList.toggle('hidden',n!==1);$('#hNext').classList.toggle('hidden',n!==1);$('#deploy').classList.toggle('hidden',n!==2);$('#home').scrollTop=0;homeExtra()}
+$$('.steps li').forEach(li=>{li.onclick=()=>setStep(+li.dataset.s);li.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setStep(+li.dataset.s)}}});
+$('#hNext').onclick=()=>setStep(2);$('#hBack').onclick=()=>setStep(1);
+function homeExtra(){const mi=MAPINFO[prefs.map];if(!mi)return;
+ $('#infoName').textContent=mi.name;$('#infoDesc').textContent=mi.txt;$('#infoSize').textContent=mi.size;
+ $('#footSel').textContent=`${mi.name} · ${G.MODES[prefs.mode].name.toUpperCase()}`+(hStep===2?` · ${prefs.team.toUpperCase()} · ${CL[prefs.cls].name.toUpperCase()}`:'');
+ // squads sit under their own team's card
+ const other=prefs.team==='blue'?'red':'blue';$('.sqCol.'+prefs.team).append($('#matesBox'));$('.sqCol.'+other).append($('#foesBox'));
+ const L=['easy','normal','hard'],di=L.indexOf(prefs.diff);$$('#diff .arr').forEach(b=>b.disabled=+b.dataset.step<0?di<=0:di>=2);
+ queueThumbs();showThumbs()}
+// map thumbnails: each map rendered by the game itself (current mode), redone once the planet textures finish baking
+const THUMB={};let thumbQ=[],thumbBaked=false;const thumbCv=document.createElement('canvas');thumbCv.width=480;thumbCv.height=270;
+function queueThumbs(){for(const m of G.MAP_IDS){const k=prefs.mode+'|'+m;if(!THUMB[k]&&!thumbQ.includes(k))thumbQ.push(k)}}
+function showThumbs(){for(const img of $$('img[data-thumb]')){const u=THUMB[prefs.mode+'|'+img.dataset.thumb];if(u&&img._u!==u){img._u=u;img.src=u;img.onload=()=>img.classList.add('ok')}}
+ const u=THUMB[prefs.mode+'|'+prefs.map],ii=$('#infoImg');if(u&&ii._u!==u){ii._u=u;ii.src=u}}
+function thumbTick(){if(!thumbBaked&&R.baking===0){thumbBaked=true;for(const k in THUMB)delete THUMB[k];thumbQ=[];queueThumbs()}
+ const k=thumbQ.shift();if(!k)return;const[md,mp]=k.split('|');
+ try{const L=LAYOUTS[k]||(LAYOUTS[k]=G.makeOrbitLayout(1,md,mp)),A=L.A;
+  const T=G.create({mode:md,layout:L,seed:7,blue:['shield','speed','power'],red:['power','speed','shield'],diff:'hard'});for(let i=0;i<150;i++)G.step(T,1/30);T.events.length=0;
+  const e=mp==='planets'?[A[0]*.7,A[1]*.62,-A[2]*.72]:[A[0]*.8,A[1]*.68,A[2]*.82],tg=mp==='planets'?[0,0,-10]:[0,0,0];
+  R.setCamera(e,V.nrm(V.sub(tg,e)),[0,1,0],1.2,W/H);R.frame({L,S:T,fx:{parts:[],flash:{}},t:T.t},{fogN:260,fogF:620,bakeMs:1});
+  const cv=$('#gl'),cw=cv.width,ch=cv.height,sw=Math.min(cw,ch*16/9),sh=sw*9/16;const c=thumbCv.getContext('2d');c.drawImage(cv,(cw-sw)/2,(ch-sh)/2,sw,sh,0,0,480,270);
+  THUMB[k]=thumbCv.toDataURL('image/jpeg',.82);showThumbs()}catch(err){THUMB[k]='data:,';console.warn('thumb',err)}}
 const openRules=()=>$('#rules').classList.remove('hidden');$('#rulesBtn').onclick=openRules;$('#pRules').onclick=openRules;$('#closeRules').onclick=()=>$('#rules').classList.add('hidden');
 $('#mapBtn').onclick=()=>$('#map').classList.remove('hidden');$('#mapClose').onclick=()=>$('#map').classList.add('hidden');
 
@@ -1275,7 +1421,7 @@ function hud(dt){const my=me.team,foe=G.foeOf(my);
 function tickFx(dt){for(const p of fx.parts){p.p=V.add(p.p,V.mul(p.v,dt));p.v=V.mul(p.v,Math.exp(-2*dt));p.l-=dt}fx.parts=fx.parts.filter(p=>p.l>0);for(const k in fx.flash){fx.flash[k]-=dt*4;if(fx.flash[k]<=0)delete fx.flash[k]}}
 function loop(now){requestAnimationFrame(loop);const dt=Math.min(.1,(now-last)/1000);last=now;const t=now/1000;
  if(mode==='spec'&&S){NET.frame(dt);tickFx(dt);SPEC.frame(dt);return}
- if(mode==='home'||!S){if(!demo)resetDemo();acc+=dt;let n=0;while(acc>=1/30&&n<4){G.step(demo,1/30);handleEvents(demo,false);acc-=1/30;n++}if(n===4)acc=0;if(demo.over)resetDemo();tickFx(dt);
+ if(mode==='home'||!S){if(mode==='home')thumbTick();if(!demo)resetDemo();acc+=dt;let n=0;while(acc>=1/30&&n<4){G.step(demo,1/30);handleEvents(demo,false);acc-=1/30;n++}if(n===4)acc=0;if(demo.over)resetDemo();tickFx(dt);
   const a=t*.06,A=demo.L.A;{const k=[.85,.7,.8];const e=[Math.cos(a)*A[0]*k[0],A[1]*k[1],Math.sin(a)*A[2]*k[2]];R.setCamera(e,V.nrm(V.mul(e,-1)),[0,1,0],1.25,W/H)}
   R.frame({L:demo.L,S:demo,fx,t:demo.t},{fogN:200,fogF:420,bakeMs:10});return}
  if(NET.role)NET.frame(dt);else if(mode==='match'){acc+=dt;let n=0;while(acc>=1/30&&n<5&&mode==='match'){const i=readInput();G.step(S,1/30,i);handleEvents(S,true);acc-=1/30;n++}if(n===5)acc=0}
@@ -1288,7 +1434,7 @@ function loop(now){requestAnimationFrame(loop);const dt=Math.min(.1,(now-last)/1
  const arc=hudP.arc&&me.status==='active'?G.aimArc(S,Object.assign({},me,{aim:f})):null;
  R.frame({L:S.L,S,me,fx,t:S.t,arc,dots:hudP.dots},{viewmodel:!showMe,kick,bob:Math.sin(S.t*6)*bob,showMe});
  if(mode!=='end'||true)hud(dt);if(_off)NET.offOff()}
-showScreens();resize();requestAnimationFrame(loop);
+setStep(1);showScreens();resize();requestAnimationFrame(loop);
 // ---------- spectator screen (1.3 · multiplayer step 4): the Host only host watches the match it runs.
 // The 3D view fills the screen (drag to orbit, wheel or pinch to zoom, tap a player to follow, tap empty space to stop).
 // Two movable, resizable windows sit on top: Top view (2D, looking down) and Gate view (2D, looking down the arena from behind a gate).
